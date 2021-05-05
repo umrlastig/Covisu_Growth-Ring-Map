@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8">
+	<meta name="description" content="Visualisation GRM">
+    <title>Visualisation GRM</title>
+	<link rel="stylesheet" href="leaflet/leaflet.css">
+	<link rel="stylesheet" media="screen" href="style.css"/>
+	<script type="text/javascript" src="leaflet/leaflet.js"></script>
+	<script type="text/javascript" src="data.js"></script>
+	<script type="text/javascript" src="markercluster-src.js"></script>
+	<script src="https://d3js.org/d3.v4.js"></script>
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="color_scale.js"></script>
+	
+  </head>
+	 <body>
+		<div id="div_map_container"><div id="divmap"></div></div>
+		<div id="div_interface">
+			<div id="div_interface_graphic">
+				<div id="div_interface_graphic_container"></div>
+			</div>
+			<div id="div_interface_control">
+				<div>Rayon aggregation</div>
+				<input type="text" id="radius" value="20">
+				<div>Cst_area</div>
+				<input type="text" id="cst_area" value="12">
+				<div>color_class</div>
+				<select id="color_class_select">
+				
+					<option value="4_irregular_inner_new_dark">4_irregular_inner_new_dark</option>
+					<option value="4_irregular_inner_old_dark">4_irregular_inner_old_dark</option>
+					<option value="4_zoom_regular_inner_new_dark">4_zoom_regular_inner_new_dark</option>
+					
+					
+					<option value="9_irregular_inner_new_dark">9_irregular_inner_new_dark</option>
+					<option value="9_irregular_inner_old_light">9_irregular_inner_old_light</option>					
+					<option value="9_irregular_inner_old_dark">9_irregular_inner_old_dark</option>
+					
+					<option value="9_regular_inner_old_dark">9_regular_inner_old_dark</option>
+					<option value="11_regular_inner_old_div_blue">11_regular_inner_old_div_blue</option>
+					<option value="9_regular_inner_old_light">9_regular_inner_old_light</option>
+					<option value="11_regular_inner_old_div_red">11_regular_inner_old_div_red</option>
+					
+					<option value="9_irregular_inner_new_blue_div">9_irregular_inner_new_blue_div</option>
+					<option value="9_irregular_inner_old_blue_div">9_irregular_inner_old_blue_div</option>
+					<option value="9_irregular_inner_old_red_div">9_irregular_inner_old_red_div</option>
+					
+					<option value="9_regular_oldzoom_inner_old_red_div">9_regular_oldzoom_inner_old_red_div</option>
+					
+					
+					<option value="9_zoom_regular_inner_new_dark">9_zoom_regular_inner_new_dark</option>
+					<option value="9_zoom2_regular_inner_new_dark">9_zoom2_regular_inner_new_dark</option>
+					<option value="9_zoom3_regular_inner_new_dark">9_zoom3_regular_inner_new_dark</option>
+					<option value="9_zoom4_regular_inner_new_dark">9_zoom4_regular_inner_new_dark</option>
+					
+				</select>
+				<div><input type="button" id="update_button" value="Recharger carte"></div>
+				
+				<div id="list_date"></div>
+				
+			</div>
+		</div>
+	<script type="text/javascript" src="app.js"></script>
+	</body>
+</html>
