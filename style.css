@@ -1,0 +1,55 @@
+body {
+  min-height: 100vh;                  /* 1 */
+  display: grid;                      /* 2 */
+  grid-template-columns: 75% 1fr;   /* 3 */
+  grid-template-rows: 1fr;  /* 3 */
+}
+#div_map_container {
+  grid-column: 1;       
+	grid-row: 1;   /* 4 */
+  background-color:blue;
+}
+
+#div_map {
+  width: 100%;
+  height: 100%;
+}
+
+#div_interface  {
+  grid-column: 2;                     /* 5 */
+  grid-row: 1;            
+  display: grid;                      /* 2 */
+  grid-template-columns: 1fr;   /* 3 */
+  grid-template-rows: 40% 1fr;  /* 3 */
+}
+
+#div_interface_graphic{
+  grid-column: 1;       
+	grid-row: 1;   
+}
+
+#div_interface_graphic_container{
+	width: 100%;
+	height: 100%;
+	padding: 5px;
+}
+
+#div_interface_control{
+  grid-column: 1;       
+	grid-row: 2;   
+	background-color:white;
+	padding-top:10px
+}
+
+.mycluster {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background-color: #3498db;
+    color: white;
+    text-align: center;
+    font-size: 20px;    
+    line-height: 40px;
+    margin-top: -20px;
+    margin-left: -20px;
+}
