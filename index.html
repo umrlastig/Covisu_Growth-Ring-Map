@@ -7,7 +7,6 @@
 	<link rel="stylesheet" href="leaflet/leaflet.css">
 	<link rel="stylesheet" media="screen" href="style.css"/>
 	<script type="text/javascript" src="leaflet/leaflet.js"></script>
-	<script type="text/javascript" src="data.js"></script>
 	<script type="text/javascript" src="markercluster-src.js"></script>
 	<script src="https://d3js.org/d3.v4.js"></script>
 	<script type="text/javascript" src="jquery.js"></script>
@@ -21,46 +20,110 @@
 				<div id="div_interface_graphic_container"></div>
 			</div>
 			<div id="div_interface_control">
-				<div>Rayon aggregation</div>
-				<input type="text" id="radius" value="20">
-				<div>Cst_area</div>
-				<input type="text" id="cst_area" value="12">
-				<div>color_class</div>
-				<select id="color_class_select">
+				<div>Données</div>
+				<input type="file" id="data_file" name="data_file" accept="json">
+				<div>Rayon d'aggregation des glyphes</div>
+				<div class="div_slider_map">
+					<input type="range" id="radius" name="radius" min="5" max="100" value="20" step="1">
+					<p id="radius_label">20</p>
+				</div>
+				<div>Constante utilisée pour calculer l'aire</div>
+				<div class="div_slider_map">
+					<input type="range" id="cst_area" name="cst_area" min="4" max="100" value="12" step="1">
+					<p id="cst_area_label">12</p>
+				</div>
+				<div id="div_glyph_selectors">				
+					<div id="div_glyph_construction_selectors">
+						<div>Construction des glyphes</div>
+						<div>
+							<select id="glyph_construction_type">
+								<option value="area_type">basée sur l'aire</option>
+								<option value="radius_type">basée sur le rayon</option>
+							</select>
+						</div>
+					</div>
+					<div id="date_order_selector">
+						<div>
+							Ordre des anneaux
+						</div>
+						<div>
+							<select id="date_order">
+								<option value="inner_old">anciens au centre</option>
+								<option value="inner_new">récents au centre</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div><input type="button" id="legend_menu_button" value="Legende"/></div>
 				
-					<option value="4_irregular_inner_new_dark">4_irregular_inner_new_dark</option>
-					<option value="4_irregular_inner_old_dark">4_irregular_inner_old_dark</option>
-					<option value="4_zoom_regular_inner_new_dark">4_zoom_regular_inner_new_dark</option>
-					
-					
-					<option value="9_irregular_inner_new_dark">9_irregular_inner_new_dark</option>
-					<option value="9_irregular_inner_old_light">9_irregular_inner_old_light</option>					
-					<option value="9_irregular_inner_old_dark">9_irregular_inner_old_dark</option>
-					
-					<option value="9_regular_inner_old_dark">9_regular_inner_old_dark</option>
-					<option value="11_regular_inner_old_div_blue">11_regular_inner_old_div_blue</option>
-					<option value="9_regular_inner_old_light">9_regular_inner_old_light</option>
-					<option value="11_regular_inner_old_div_red">11_regular_inner_old_div_red</option>
-					
-					<option value="9_irregular_inner_new_blue_div">9_irregular_inner_new_blue_div</option>
-					<option value="9_irregular_inner_old_blue_div">9_irregular_inner_old_blue_div</option>
-					<option value="9_irregular_inner_old_red_div">9_irregular_inner_old_red_div</option>
-					
-					<option value="9_regular_oldzoom_inner_old_red_div">9_regular_oldzoom_inner_old_red_div</option>
-					
-					
-					<option value="9_zoom_regular_inner_new_dark">9_zoom_regular_inner_new_dark</option>
-					<option value="9_zoom2_regular_inner_new_dark">9_zoom2_regular_inner_new_dark</option>
-					<option value="9_zoom3_regular_inner_new_dark">9_zoom3_regular_inner_new_dark</option>
-					<option value="9_zoom4_regular_inner_new_dark">9_zoom4_regular_inner_new_dark</option>
-					
-				</select>
-				<div><input type="button" id="update_button" value="Recharger carte"></div>
-				
-				<div id="list_date"></div>
+				<div id="bar_info"></div>
 				
 			</div>
+			
+				
+			<div id="div_interface_graphic_selectedcluster">
+				<div id="div_interface_graphic_container_selectedcluster">
+				</div>
+			</div>
 		</div>
+		
+		<div id="div_color_legend">
+			<div id="div_color_legend_content">
+			
+				<div id="dataset_date_selectors">
+					<input type="date" id="dataset_start" name="input_dataset_start" value="2021-08-16" min="2019-11-01" max="2022-01-01">
+					<input type="date" id="dataset_end" name="input_dataset_start" value="2021-10-16" min="2019-11-01" max="2022-01-01">
+				</div>
+				
+				<div id="color_selectors">
+					
+					<div id="color_palette_selector">
+						<div>
+							Palette de couleur
+						</div>
+						<div>
+							<select id="color_palette">
+								<option value="uni_hue_blue">uni_hue_blue</option>
+								<option value="uni_hue_red">uni_hue_red</option>
+								<option value="uni_hue_green_blue">uni_hue_green_blue</option>
+								<option value="uni_hue_yellow_red">uni_hue_yellow_red</option>
+								<option value="diverging_blue_white_red">diverging_blue_white_red</option>
+								<option value="diverging_blue_yellow_red">diverging_blue_yellow_red</option>
+								<option value="diverging_blue_yellow_green_red">diverging_blue_yellow_green_red</option>
+							</select>
+						</div>
+					</div>
+					
+					<div id="color_order_selector">
+						<div>
+							Ordre des couleurs
+						</div>
+						<div>
+							<select id="color_order">
+								<option value="right_order">non-inversé</option>
+								<option value="reversed_order">inversé</option>
+							</select>
+						</div>
+					</div>
+					
+					
+					
+				</div>
+				
+				<div id="number_ofclasses_selectors">
+					<input type="range" id="number_ofclasses" name="number_ofclasses" min="4" max="11" value="7" step="1">
+					<p id="number_ofclasses_label">7 Classes</p>
+				</div>
+				
+				<div id="classes_border_selectors">
+				</div>
+					
+				<div id="color_legend">
+				</div>
+			
+			</div>
+		</div>
+		
 	<script type="text/javascript" src="app.js"></script>
 	</body>
 </html>
