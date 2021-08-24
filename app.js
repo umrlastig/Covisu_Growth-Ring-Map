@@ -58,6 +58,13 @@ $("#date_order").on("change",function() {
 	
 });
 
+$("#glyph_construction_type").on("change",function() {
+		
+	update_map();
+	
+});
+
+
 $("#number_ofclasses").on("input",function() {
 	
 	create_legend_cursors(parseInt($(this).val()));
