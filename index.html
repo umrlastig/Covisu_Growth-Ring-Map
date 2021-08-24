@@ -20,36 +20,36 @@
 				<div id="div_interface_graphic_container"></div>
 			</div>
 			<div id="div_interface_control">
-				<div>Données</div>
+				<div>Data</div>
 				<input type="file" id="data_file" name="data_file" accept="json">
-				<div>Rayon d'aggregation des glyphes</div>
+				<div>Aggregation radius used to create the glyphs</div>
 				<div class="div_slider_map">
 					<input type="range" id="radius" name="radius" min="5" max="100" value="20" step="1">
 					<p id="radius_label">20</p>
 				</div>
-				<div>Constante utilisée pour calculer l'aire</div>
+				<div>Constant value used to create glyphs</div>
 				<div class="div_slider_map">
 					<input type="range" id="cst_area" name="cst_area" min="4" max="100" value="12" step="1">
 					<p id="cst_area_label">12</p>
 				</div>
 				<div id="div_glyph_selectors">				
 					<div id="div_glyph_construction_selectors">
-						<div>Construction des glyphes</div>
+						<div>Rings construction</div>
 						<div>
 							<select id="glyph_construction_type">
-								<option value="area_type">basée sur l'aire</option>
-								<option value="radius_type">basée sur le rayon</option>
+								<option value="area_type">based on area</option>
+								<option value="radius_type">based on radius</option>
 							</select>
 						</div>
 					</div>
 					<div id="date_order_selector">
 						<div>
-							Ordre des anneaux
+							Order of the rings
 						</div>
 						<div>
 							<select id="date_order">
-								<option value="inner_old">anciens au centre</option>
-								<option value="inner_new">récents au centre</option>
+								<option value="inner_old">oldest data at the center</option>
+								<option value="inner_new">newest data at the center</option>
 							</select>
 						</div>
 					</div>
@@ -79,7 +79,7 @@
 					
 					<div id="color_palette_selector">
 						<div>
-							Palette de couleur
+							Color palette
 						</div>
 						<div>
 							<select id="color_palette">
@@ -96,12 +96,12 @@
 					
 					<div id="color_order_selector">
 						<div>
-							Ordre des couleurs
+							Color order
 						</div>
 						<div>
 							<select id="color_order">
-								<option value="right_order">non-inversé</option>
-								<option value="reversed_order">inversé</option>
+								<option value="right_order">non-reversed</option>
+								<option value="reversed_order">reversed</option>
 							</select>
 						</div>
 					</div>
