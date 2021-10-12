@@ -14,59 +14,79 @@
 	
   </head>
 	 <body>
-		<div id="div_map_container"><div id="divmap"></div></div>
-		<div id="div_interface">
-			<div id="div_interface_graphic">
-				<div id="div_interface_graphic_container"></div>
-			</div>
-			<div id="div_interface_control">
-				<div>Data</div>
-				<input type="file" id="data_file" name="data_file" accept="json">
-				<div>Aggregation radius used to create the glyphs</div>
-				<div class="div_slider_map">
-					<input type="range" id="radius" name="radius" min="5" max="100" value="20" step="1">
-					<p id="radius_label">20</p>
+		<div id="page_container">
+			<div id="div_map_container"><div id="divmap"></div></div>
+			<div id="div_interface">
+				<div id="div_interface_graphic">
+					<div id="div_interface_graphic_container"></div>
 				</div>
-				<div>Constant value used to create glyphs</div>
-				<div class="div_slider_map">
-					<input type="range" id="cst_area" name="cst_area" min="4" max="100" value="12" step="1">
-					<p id="cst_area_label">12</p>
-				</div>
-				<div id="div_glyph_selectors">				
-					<div id="div_glyph_construction_selectors">
-						<div>Rings construction</div>
-						<div>
-							<select id="glyph_construction_type">
-								<option value="area_type">based on area</option>
-								<option value="radius_type">based on radius</option>
-							</select>
+				<div id="div_interface_control">
+					<div>Data</div>
+					<input type="file" id="data_file" name="data_file" accept="json">
+					<div>Aggregation radius used to create the glyphs</div>
+					<div class="div_slider_map">
+						<input type="range" id="radius" name="radius" min="5" max="100" value="20" step="1">
+						<p id="radius_label">20</p>
+					</div>
+					<div>Constant value used to create glyphs</div>
+					<div class="div_slider_map">
+						<input type="range" id="cst_area" name="cst_area" min="4" max="100" value="12" step="1">
+						<p id="cst_area_label">12</p>
+					</div>
+					<div id="div_glyph_selectors">				
+						<div id="div_glyph_construction_selectors">
+							<div>Rings construction</div>
+							<div>
+								<select id="glyph_construction_type">
+									<option value="area_type">based on area</option>
+									<option value="radius_type">based on radius</option>
+								</select>
+							</div>
+						</div>
+						<div id="date_order_selector">
+							<div>
+								Order of the rings
+							</div>
+							<div>
+								<select id="date_order">
+									<option value="inner_old">oldest data at the center</option>
+									<option value="inner_new">newest data at the center</option>
+								</select>
+							</div>
+						</div>
+						<div id="selected_graph_max_div">
+							<div>
+								Max of the selected graph
+							</div>
+							<div>
+								<select id="selected_graph_max_value">
+									<option value="relative_max">relative max</option>
+									<option value="absolute_max">absolute max</option>
+								</select>
+							</div>
+						</div>
+						<div id="animated_graph">
+							<div>
+								<input type="button" id="open_animation_menu" value="animation"/>
+							</div>
+							<div>
+								<input type="button" id="legend_menu_button" value="Legende"/>
+							</div>
 						</div>
 					</div>
-					<div id="date_order_selector">
-						<div>
-							Order of the rings
-						</div>
-						<div>
-							<select id="date_order">
-								<option value="inner_old">oldest data at the center</option>
-								<option value="inner_new">newest data at the center</option>
-							</select>
-						</div>
-					</div>
+					
+					
+					<div id="bar_info"></div>
+					
 				</div>
-				<div><input type="button" id="legend_menu_button" value="Legende"/></div>
 				
-				<div id="bar_info"></div>
-				
-			</div>
-			
-				
-			<div id="div_interface_graphic_selectedcluster">
-				<div id="div_interface_graphic_container_selectedcluster">
+					
+				<div id="div_interface_graphic_selectedcluster">
+					<div id="div_interface_graphic_container_selectedcluster">
+					</div>
 				</div>
 			</div>
 		</div>
-		
 		<div id="div_color_legend">
 			<div id="div_color_legend_content">
 			
@@ -90,6 +110,11 @@
 								<option value="diverging_blue_white_red">diverging_blue_white_red</option>
 								<option value="diverging_blue_yellow_red">diverging_blue_yellow_red</option>
 								<option value="diverging_blue_yellow_green_red">diverging_blue_yellow_green_red</option>
+								<option value="SM_Maxime_1">SM_Maxime_1</option>
+								<option value="SM_Maxime_2">SM_Maxime_2</option>
+								<option value="SM_Maxime_3">SM_Maxime_3</option>
+								<option value="SM_Maxime_4">SM_Maxime_4</option>
+								<option value="SM_Maxime_5">SM_Maxime_5</option>
 							</select>
 						</div>
 					</div>
@@ -122,6 +147,25 @@
 				</div>
 			
 			</div>
+		</div>
+		
+		<div id="animation_div">
+			<div>
+				Animation
+				<select id="animation_activation">
+					<option value="animation_active">active</option>
+					<option value="animation_non_active" selected>inactive</option>
+				</select>
+			</div>
+			<div id='current_date_div' class='control_div'></div>
+			<input id="start" type="button" value="Start">
+			<input id="stop" type="button" value="Stop">
+			<input id="reset" type="button" value="Reset">
+			<div id='anim_div' class='control_div'></div>
+			<input id="IS" type="button" value="Increase Speed">
+			<input id="DS" type="button" value="Decrease Speed">
+			<div id='anim_speed' class='control_div'></div>
+			<div id='slider_div' class='control_div'></div>
 		</div>
 		
 	<script type="text/javascript" src="app.js"></script>
