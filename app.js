@@ -9,13 +9,6 @@
 //var agg_radius = 20;
 //var color_classes = color_classes_9_ter
 
-$('body').height($(window).height());
-$('body').width($(window).width()-10);
-
-$('#div_color_legend').height($(window).height()*0.8);
-$('#div_color_legend').width($(window).width()*0.3);
-
-
 var lat_map = 46.90296;
 var lng_map = 1.90925;
 var zoom_map = 6;
@@ -740,10 +733,6 @@ function create_legend_cursors(number_of_class){
 	
 	for(var nc = 0; nc<(number_of_class-1); nc++){
 		create_date_selectors_slider(nc, nc + 1,  number_of_class,dataset_start,dataset_end);
-	}
-	
-	if(number_of_class * $(".div_date_selectors_slider").height() > $("#classes_border_selectors").height()){
-		$(".div_date_selectors_slider").height($("#classes_border_selectors").height()/number_of_class);
 	}
 	
 	create_color_legend();
