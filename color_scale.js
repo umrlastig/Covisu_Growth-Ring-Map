@@ -75,5 +75,20 @@ var color_scales_palettes = {
 		"9":['#d53e4f','#f46d43','#fdae61','#fee08b','#ffffbf','#e6f598','#abdda4','#66c2a5','#3288bd'],
 		"10":['#9e0142','#d53e4f','#f46d43','#fdae61','#fee08b','#e6f598','#abdda4','#66c2a5','#3288bd','#5e4fa2'],
 		"11":['#9e0142','#d53e4f','#f46d43','#fdae61','#fee08b','#ffffbf','#e6f598','#abdda4','#66c2a5','#3288bd','#5e4fa2']
+	},
+	SM_Maxime_1:{
+		"8":['#de2d26','#e6550d','#fdae6b','#31a354','#a1d99b','#3182bd','#9ecae1','#756bb1']
+	},
+	SM_Maxime_2:{
+		"8":['#de2d26','#e6550d','#fdae6b','#31a354','#a1d99b','#3182bd','#9ecae1','#deebf7']
+	},
+	SM_Maxime_3:{
+		"12":['#cb181d','#fb6a4a','#fcae91','#fee5d9','#31a354','#a1d99b','#e5f5e0','#08519c','#3182bd','#6baed6','#bdd7e7','#eff3ff']
+	},
+	SM_Maxime_4:{
+		"12":['#cb181d','#fb6a4a','#fcae91','#fee5d9','#31a354','#a1d99b','#e5f5e0','#c51b8a','#fa9fb5','#fde0dd','#3182bd','#9ecae1']
+	},
+	SM_Maxime_5:{
+		"12":['#cb181d','#fb6a4a','#fcae91','#fee5d9','#31a354','#a1d99b','#e5f5e0','#3182bd','#9ecae1','#deebf7','#c51b8a','#fa9fb5']
 	}
 }
