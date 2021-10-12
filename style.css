@@ -1,22 +1,18 @@
 body {
-	margin: 0px;
-}
-
-
-#page_container {                 /* 1 */
+  min-height: 100vh;                  /* 1 */
   display: grid;                      /* 2 */
   grid-template-columns: 75% 1fr;   /* 3 */
-  grid-template-rows: 1fr;  /* 3 */
+  grid-template-rows: 98% 1fr;  /* 3 */
   height: 100%;
   width: 100%;
   margin: 0px;
+  max-width: 1880px;
+  max-height: 668px;
 }
-
 #div_map_container {
   grid-column: 1;       
 	grid-row: 1;   /* 4 */
   background-color:blue;
-  margin: 0px;
 }
 
 #div_map {
@@ -29,9 +25,7 @@ body {
   grid-row: 1;            
   display: grid;                      /* 2 */
   grid-template-columns: 1fr;   /* 3 */
-  grid-template-rows: 30% 55% 15%;  /* 3 */
-  margin: 0px;
-  padding: 1%;
+  grid-template-rows: 34% 40% 26%;  /* 3 */
 }
 
 #div_interface_graphic{
@@ -42,17 +36,17 @@ body {
 #div_interface_graphic_container{
 	width: 100%;
 	height: 100%;
-	padding: 1%;
+	padding: 5px;
 }
 
 #div_interface_control{
   grid-column: 1;       
 	grid-row: 2;   
 	background-color:white;
-	padding-top:2%;
+	padding-top:10px
 }
 
-/*.mycluster {
+.mycluster {
     height: 40px;
     width: 40px;
     border-radius: 50%;
@@ -63,7 +57,7 @@ body {
     line-height: 40px;
     margin-top: -20px;
     margin-left: -20px;
-}*/
+}
 
 
 /*#list_date{
@@ -78,14 +72,14 @@ body {
 #div_interface_graphic_container_selectedcluster{
 	height: 100%;
 	width: 100%;
-	padding: 1%;
+	padding: 5px;
 }
 
 #div_color_legend{
 	visibility: hidden;
 	position: absolute;
-	top: 10%;
-	left: 5%;
+	top: 80px;
+	left: 10px;
 	width: 500px;
 	height: 800px;
 	background-color: #FFFFFF;
