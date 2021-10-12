@@ -9,16 +9,37 @@
 //var agg_radius = 20;
 //var color_classes = color_classes_9_ter
 
+$('body').height($(window).height());
+$('body').width($(window).width()-10);
+
+$('#div_color_legend').height($(window).height()*0.8);
+$('#div_color_legend').width($(window).width()*0.3);
+
+
+$('#animation_activation').val('animation_non_active');
+
 var lat_map = 46.90296;
 var lng_map = 1.90925;
 var zoom_map = 6;
 var map_bounds;
 var map;
 
+var absolute_max_nb_event = 0;;
+
+var selected_graph_max_value = 'relative_max';
+
 var data_events = [];
 
 var legend_status = "legend_activated";
 //var legend_status == "legend_non_activated";
+
+
+var current_time_value= new Date($("#dataset_start").val());
+
+
+var markersCluster;
+
+var event_to_keep;
 
 /*
 $("#update_button").click(function() {
@@ -27,6 +48,21 @@ $("#update_button").click(function() {
   
 });
 */
+
+$("#selected_graph_max_value").on("change",function() {
+	
+	selected_graph_max_value = $('#selected_graph_max_value').val();
+});	
+
+$("#open_animation_menu").click(function() {
+	console.log("okok")
+	if($("#animation_div").css("visibility") == "hidden"){
+		$("#animation_div").css("visibility","visible");
+	} else {
+		$("#animation_div").css("visibility","hidden");
+	}
+	
+});	
 
 $("#legend_menu_button").click(function() {
 	
@@ -123,6 +159,91 @@ $("#number_ofclasses").on("input",function() {
 
 
 $("#color_palette").on("change",function() {
+	
+	if($("#color_palette").val() == "SM_Maxime_1"){
+		$('#number_ofclasses').hide();
+		$('#number_ofclasses').val(8);
+		$('#number_ofclasses_label').html('8 classes');
+		create_legend_cursors(8);
+		
+		//$('.range_date_selectors_slider').hide();
+		$('#range_date_selectors_slider_classes_0_to_1').val(5);
+		$('#range_date_selectors_slider_classes_1_to_2').val(13);
+		$('#range_date_selectors_slider_classes_2_to_3').val(21);
+		$('#range_date_selectors_slider_classes_3_to_4').val(29);
+		$('#range_date_selectors_slider_classes_4_to_5').val(35);
+		$('#range_date_selectors_slider_classes_5_to_6').val(48);
+		$('#range_date_selectors_slider_classes_6_to_7').val(64);
+		
+		
+		$('#p_date_selectors_slider_classes_0_to_1').html('18/08/2021');
+		$('#p_date_selectors_slider_classes_1_to_2').html('23/08/2021');
+		$('#p_date_selectors_slider_classes_2_to_3').html('28/08/2021');
+		$('#p_date_selectors_slider_classes_3_to_4').html('01/09/2021');
+		$('#p_date_selectors_slider_classes_4_to_5').html('05/09/2021');
+		$('#p_date_selectors_slider_classes_5_to_6').html('12/09/2021');
+		$('#p_date_selectors_slider_classes_6_to_7').html('25/09/2021');
+	} else if($("#color_palette").val() == "SM_Maxime_2"){
+		$('#number_ofclasses').hide();
+		$('#number_ofclasses').val(8);
+		$('#number_ofclasses_label').html('8 classes');
+		create_legend_cursors(8);
+		//$('.range_date_selectors_slider').hide();
+		$('#range_date_selectors_slider_classes_0_to_1').val(5);
+		$('#range_date_selectors_slider_classes_1_to_2').val(13);
+		$('#range_date_selectors_slider_classes_2_to_3').val(21);
+		$('#range_date_selectors_slider_classes_3_to_4').val(29);
+		$('#range_date_selectors_slider_classes_4_to_5').val(35);
+		$('#range_date_selectors_slider_classes_5_to_6').val(48);
+		$('#range_date_selectors_slider_classes_6_to_7').val(64);
+		
+		
+		$('#p_date_selectors_slider_classes_0_to_1').html('18/08/2021');
+		$('#p_date_selectors_slider_classes_1_to_2').html('23/08/2021');
+		$('#p_date_selectors_slider_classes_2_to_3').html('28/08/2021');
+		$('#p_date_selectors_slider_classes_3_to_4').html('01/09/2021');
+		$('#p_date_selectors_slider_classes_4_to_5').html('05/09/2021');
+		$('#p_date_selectors_slider_classes_5_to_6').html('12/09/2021');
+		$('#p_date_selectors_slider_classes_6_to_7').html('25/09/2021');
+	} else if($("#color_palette").val() == "SM_Maxime_3" || $("#color_palette").val() == "SM_Maxime_4" || $("#color_palette").val() == "SM_Maxime_5"){
+		$("#number_ofclasses").attr('max',12)
+		$('#number_ofclasses').hide();
+		$('#number_ofclasses').val(12);
+		$('#number_ofclasses_label').html('12 classes');
+		create_legend_cursors(12);
+		//$('.range_date_selectors_slider').hide();
+		$('#range_date_selectors_slider_classes_0_to_1').val(4);
+		$('#range_date_selectors_slider_classes_1_to_2').val(13);
+		$('#range_date_selectors_slider_classes_2_to_3').val(18);
+		$('#range_date_selectors_slider_classes_3_to_4').val(22);
+		$('#range_date_selectors_slider_classes_4_to_5').val(27);
+		$('#range_date_selectors_slider_classes_5_to_6').val(33);
+		$('#range_date_selectors_slider_classes_6_to_7').val(36);
+		$('#range_date_selectors_slider_classes_7_to_8').val(48);
+		$('#range_date_selectors_slider_classes_8_to_9').val(56);
+		$('#range_date_selectors_slider_classes_9_to_10').val(66);
+		$('#range_date_selectors_slider_classes_10_to_11').val(73);
+		
+		
+		$('#p_date_selectors_slider_classes_0_to_1').html('18/08/2021');
+		$('#p_date_selectors_slider_classes_1_to_2').html('23/08/2021');
+		$('#p_date_selectors_slider_classes_2_to_3').html('26/08/2021');
+		$('#p_date_selectors_slider_classes_3_to_4').html('28/08/2021');
+		$('#p_date_selectors_slider_classes_4_to_5').html('31/08/2021');
+		$('#p_date_selectors_slider_classes_5_to_6').html('03/09/2021');
+		$('#p_date_selectors_slider_classes_6_to_7').html('05/09/2021');
+		$('#p_date_selectors_slider_classes_7_to_8').html('12/09/2021');
+		$('#p_date_selectors_slider_classes_8_to_9').html('17/09/2021');
+		$('#p_date_selectors_slider_classes_9_to_10').html('22/09/2021');
+		$('#p_date_selectors_slider_classes_10_to_11').html('26/09/2021');
+	}  else {
+		$("#number_ofclasses").attr('max',11)
+		$('#number_ofclasses').show()
+		$('.range_date_selectors_slider').show()
+	}
+	
+	
+	
 	create_color_legend();
 	
 	update_map();
@@ -152,6 +273,16 @@ $("#radius").on("input",function() {
 });
 
 
+$("#animation_activation").on("change",function() {	
+	if($("#animation_activation").val() == "animation_non_active"){
+		reset_function();
+		update_map();
+	} else if($("#animation_activation").val() == "animation_active"){
+		//set event to show
+		reset_function();
+	}
+	
+});
 
 
 $("#data_file").on("change",function(e) {
@@ -227,7 +358,7 @@ $("#data_file").on("change",function(e) {
 	  };
 	  reader.readAsText(file);
 	  
-})
+});
 
 $("#number_ofclasses_label").html(parseInt($("#number_ofclasses").val()) +  " classes");
 $('#classes_border_selectors').html("");	
@@ -252,9 +383,75 @@ function update_map(){
 		color_classes = []; 
 		if($("#date_order").val() == "inner_new"){
 			for(var f=0; f<d3.selectAll(".bar_legend_color")._groups[0].length; f++){
+				
+				var bdate_day = d3.select(d3.selectAll(".bar_legend_color")._groups[0][f]).attr("bdate_legend").split('-')[2];
+				var bdate_month = d3.select(d3.selectAll(".bar_legend_color")._groups[0][f]).attr("bdate_legend").split('-')[1];
+				var bdate_year = d3.select(d3.selectAll(".bar_legend_color")._groups[0][f]).attr("bdate_legend").split('-')[0];
+				
+				var edate_day = d3.select(d3.selectAll(".bar_legend_color")._groups[0][f]).attr("edate_legend").split('-')[2];
+				var edate_month = d3.select(d3.selectAll(".bar_legend_color")._groups[0][f]).attr("edate_legend").split('-')[1];
+				var edate_year = d3.select(d3.selectAll(".bar_legend_color")._groups[0][f]).attr("edate_legend").split('-')[0];
+		
+				var new_bdate_day = parseInt(bdate_day) +1;
+				var new_edate_day = parseInt(edate_day) +1;
+				
+				var new_bdate_month = parseInt(bdate_month);
+				var new_edate_month = parseInt(edate_month);
+				
+				if(new_bdate_day == 32){
+					new_bdate_day = 1;
+					new_bdate_month = new_bdate_month +1;
+				} else if(new_bdate_day == 29 && bdate_month == '02' ){
+					new_bdate_day = 1;
+					new_bdate_month = new_bdate_month +1;
+				} else if(new_bdate_day == 31 && (bdate_month == '04' || bdate_month == '06' || bdate_month == '09' || bdate_month == '11')){
+					new_bdate_day = 1;
+					new_bdate_month = new_bdate_month +1;
+				} 
+				
+				if(new_edate_day == 32){
+					new_edate_day = 1;
+					new_edate_month = new_edate_month +1;
+				} else if(new_edate_day == 29 && new_edate_month == '02' ){
+					new_edate_day = 1;
+					new_edate_month = new_edate_month +1;
+				} else if(new_edate_day == 31 && (new_edate_month == '04' || new_edate_month == '06' || new_edate_month == '09' || new_edate_month == '11')){
+					new_edate_day = 1;
+					new_edate_month = new_edate_month +1;
+				} 
+				
+				var new_bdate_day_string;
+				var new_edate_day_string;
+				var new_bdate_month_string;
+				var new_edate_month_string;
+				
+				if(new_bdate_day<10){
+					new_bdate_day_string = '0' + new_bdate_day;
+				} else {
+					new_bdate_day_string = new_bdate_day;
+				}
+				
+				if(new_edate_day<10){
+					new_edate_day_string = '0' + new_edate_day;
+				} else {
+					new_edate_day_string = new_edate_day;
+				}
+				
+				if(new_bdate_month<10){
+					new_bdate_month_string = '0' + new_bdate_month;
+				} else {
+					new_bdate_month_string = new_bdate_month;
+				}
+				
+				if(new_edate_month<10){
+					new_edate_month_string = '0' + new_edate_month;
+				} else {
+					new_edate_month_string = new_edate_month;
+				}
+				
 				var new_color_class = {
-					'bdate':d3.select(d3.selectAll(".bar_legend_color")._groups[0][f]).attr("bdate_legend"),
-					'edate':d3.select(d3.selectAll(".bar_legend_color")._groups[0][f]).attr("edate_legend"),
+					'bdate': bdate_year + '-' + new_bdate_month_string + '-' + new_bdate_day_string,
+					'edate': edate_year + '-' + new_edate_month_string + '-' + new_edate_day_string,
 					'color': d3.select(d3.selectAll(".bar_legend_color")._groups[0][f]).attr("color_legend"),
 					'legend_bar_value': d3.select(d3.selectAll(".bar_legend_color")._groups[0][f]).attr("legend_bar_value")
 				}
@@ -341,9 +538,10 @@ function update_map(){
 
 	map.addLayer(stamenToner);
 
-	var markersCluster = new L.markerClusterGroup({
+	markersCluster = new L.markerClusterGroup({
 				maxClusterRadius: agg_radius,
 				singleMarkerMode: true,
+				spiderfyOnMaxZoom: false,
 				iconCreateFunction: function (cluster) {
 					
 					var nb_events_by_class = [];
@@ -433,193 +631,143 @@ function update_map(){
 					
 				},
 				//Disable all of the defaults:
-				spiderfyOnMaxZoom: true, showCoverageOnHover: true, zoomToBoundsOnClick: false, animate:true, animateAddingMarkers: true
+				spiderfyOnMaxZoom: false, showCoverageOnHover: true, zoomToBoundsOnClick: false, animate:true, animateAddingMarkers: true
 			});
 
-
-	for (var i = 0; i < event_to_keep.length; i++) {
-		var latLng = new L.LatLng(event_to_keep[i].lat, event_to_keep[i].lon);
-		var marker = new L.Marker(latLng, {date: event_to_keep[i].date});
-		
-		
-		
-		markersCluster.addLayer(marker);
-		
+			
+	create_histogram(date_max,date_min,data_events,nb_classes,color_classes);
+			
+	//add_data_to_map;	
+	//TODO	
+	if($("#animation_activation").val() == "animation_non_active"){
+		markersCluster.clearLayers();
+		var event_to_show = event_to_keep;
+		load_data_to_markersCluster(event_to_show);
+	} else if($("#animation_activation").val() == "animation_active"){
+		//set event to show
+		reset_function();
 	}
+	
+
 
 	markersCluster.on('clusterclick', function (a) {
-			// a.layer is actually a cluster
-			console.log('cluster ' + a.layer.getAllChildMarkers().length);
-			var nb_events_by_class = [];
-			for(var i=0; i<nb_classes; i++){
-			  nb_events_by_class.push(0);
+		
+		var nbr_jours= parseInt((date_max - date_min)/86400000 +1);
+		
+		var nbr_case_day_array = [];	
+		var max_nb_event = 0;
+		for (var j=0; j<nbr_jours; j++){
+			nbr_case_day_array.push(0);
+		}
+		
+		console.log(date_min,date_max)
+			
+		a.layer.getAllChildMarkers().forEach((m)=>{
+			var date_event = new Date(m.options.date);
+			for (var j=0; j<nbr_jours; j++){
+				//calcul this_date
+				var this_date_time_plus = date_min + 86400000*(j+1);
+				var this_date_time_moins = date_min + 86400000*(j-1);
+				//calcul this_eventdate
+				
+				if(date_event > this_date_time_moins && date_event < this_date_time_plus){
+					nbr_case_day_array[j] = nbr_case_day_array[j] + 1;
+					if(nbr_case_day_array[j]>max_nb_event){
+						max_nb_event = nbr_case_day_array[j];
+					}
+					break;
+				}
 			}
+		});
+		
 			
-			a.layer.getAllChildMarkers().forEach((m)=>{ 
-				var date_event = new Date(m.options.date);
-				for(var g=0; g<nb_classes; g++){
-					var date_limit_down = new Date(color_classes[g].bdate).getTime();
-					var date_limit_up = new Date(color_classes[g].edate).getTime();
-					if(date_event.getTime()>=date_limit_down && date_event.getTime()<=date_limit_up){
-					  nb_events_by_class[g] = nb_events_by_class[g] +1;
-					} 
-				}
-			})
-			var nb_events_all = 0;
-			for(var i=0; i<nb_classes; i++){
-			  nb_events_by_class[i] = parseInt((nb_events_by_class[i] / a.layer.getAllChildMarkers().length)*100);
-			  nb_events_all = nb_events_all + nb_events_by_class[i];
-			}
+		var nb_events_all = 0;
+		for(var i=0; i<nbr_case_day_array.length; i++){
+		  nb_events_all = nb_events_all + nbr_case_day_array[i];
+		}
+		
+		
+		
+		$("#div_interface_graphic_container_selectedcluster").html("");
+		
+		var gwidth_selectedcluster = $("#div_interface_graphic_container_selectedcluster").width() - 5;
+		var gheight_selectedcluster = $("#div_interface_graphic_container_selectedcluster").height() -5;
+				
+				
+		//create new graph for the cluster 
+		var grx_selectedcluster = d3.scaleLinear()
+			.domain([0, nbr_jours]) 
+			.range([0, gwidth_selectedcluster]) // unit: pixels
+
+		var gry_selectedcluster;
 			
-			$("#div_interface_graphic_container_selectedcluster").html("");
+		if(selected_graph_max_value	== 'relative_max'){
+			gry_selectedcluster = d3.scaleLinear()
+			.domain([0, max_nb_event]) 
+			.range([0, gheight_selectedcluster]) // unit: pixels
+		} else if(selected_graph_max_value	== 'absolute_max'){
+			gry_selectedcluster = d3.scaleLinear()
+			.domain([0, absolute_max_nb_event]) 
+			.range([0, gheight_selectedcluster]) // unit: pixels
+		}
+		
+
+		var svg_selectedcluster = d3.select("#div_interface_graphic_container_selectedcluster").append("svg")
+				.attr("id", "graph_selectedcluster")
+				.attr("width", gwidth_selectedcluster)
+				.attr("height", gheight_selectedcluster)
+
+		
+		
+		for (var j=0; j<nbr_case_day_array.length; j++){
+			var date_jour = Math.round((date_min + 86400000*(j))/86400000);
 			
-			var gwidth_selectedcluster = $("#div_interface_graphic_container_selectedcluster").width() - 5;
-			var gheight_selectedcluster = $("#div_interface_graphic_container_selectedcluster").height() -5;
-						
-			//create new graph for the cluster 
-			var grx_selectedcluster = d3.scaleLinear()
-					.domain([0, nb_events_by_class.length]) 
-					.range([0, gwidth_selectedcluster]) // unit: pixels
-
-			var gry_selectedcluster = d3.scaleLinear()
-				.domain([0, Math.max(...nb_events_by_class)]) 
-				.range([0, gheight_selectedcluster]) // unit: pixels
-
-			var svg_selectedcluster = d3.select("#div_interface_graphic_container_selectedcluster").append("svg")
-					.attr("id", "graph_selectedcluster")
-					.attr("width", gwidth_selectedcluster)
-					.attr("height", gheight_selectedcluster)
-
-
-			if(legend_status == "legend_activated"){
-				if($("#date_order").val() == "inner_old"){
-					
-					var x_ini = 0;
-					for(var u=0; u<nb_events_by_class.length; u++){
-
-						var s = nb_events_by_class.length - u - 1;
-						
-						var color_histo_selectedcluster = color_classes[s].color;
-						var bdate_selectedcluster = color_classes[s].bdate;
-						var edate_selectedcluster = color_classes[s].edate;
-						var legend_bar_value = parseInt(color_classes[s].legend_bar_value);
-						
-						var width_bar = nb_events_by_class.length * (legend_bar_value/100);
-						
-						svg_selectedcluster.append("rect")
-						.attr("class", "bar_selectedcluster")
-						.attr("x", grx_selectedcluster(x_ini))
-						.attr("width", grx_selectedcluster(width_bar))
-						.attr("y", 0)
-						.attr('fill', color_histo_selectedcluster)
-						.attr("height", gry_selectedcluster(nb_events_by_class[s]))	
-						.attr("transform", "translate(" + 0 + "," + (gheight_selectedcluster - gry_selectedcluster(nb_events_by_class[s])) + ")")	
-						.attr("bdate", bdate_selectedcluster)	
-						.attr("edate", edate_selectedcluster)
-						.attr("color_class", s)
-						.attr('color_histo', color_histo_selectedcluster)	
-						.attr('number_event', nb_events_by_class[s])
-						.attr('number_event_all', nb_events_all)					
-						.on("mouseover", handleMouseOver_selectedcluster)
-						.on("mouseout", handleMouseOut_selectedcluster);
-						
-						x_ini = x_ini + width_bar;
-					}
-				} else if ($("#date_order").val() == "inner_new"){
-					
-					var x_ini = 0;
-					for(var u=0; u<nb_events_by_class.length; u++){
-
-						var color_histo_selectedcluster = color_classes[u].color;
-						var bdate_selectedcluster = color_classes[u].bdate;
-						var edate_selectedcluster = color_classes[u].edate;
-						var legend_bar_value = parseInt(color_classes[u].legend_bar_value);
-						
-						var width_bar = nb_events_by_class.length * (legend_bar_value/100);
-						
-						svg_selectedcluster.append("rect")
-						.attr("class", "bar_selectedcluster")
-						.attr("x", grx_selectedcluster(x_ini))
-						.attr("width", grx_selectedcluster(width_bar))
-						.attr("y", 0)
-						.attr('fill', color_histo_selectedcluster)
-						.attr("height", gry_selectedcluster(nb_events_by_class[u]))	
-						.attr("transform", "translate(" + 0 + "," + (gheight_selectedcluster - gry_selectedcluster(nb_events_by_class[u])) + ")")	
-						.attr("bdate", bdate_selectedcluster)	
-						.attr("edate", edate_selectedcluster)
-						.attr("color_class", u)
-						.attr('color_histo', color_histo_selectedcluster)	
-						.attr('number_event', nb_events_by_class[u])
-						.attr('number_event_all', nb_events_all)		
-						.on("mouseover", handleMouseOver_selectedcluster)
-						.on("mouseout", handleMouseOut_selectedcluster);
-						
-						x_ini = x_ini + width_bar;
-					}
-				}
-			} else if(legend_status == "legend_non_activated"){		
-					
-				if(selected_color_class.split("inner_old").length > 1){
-					for(var u=0; u<nb_events_by_class.length; u++){
-
-						var s = nb_events_by_class.length - u - 1;
-						
-						var color_histo_selectedcluster = color_classes[s].color;
-						var bdate_selectedcluster = color_classes[s].bdate
-						var edate_selectedcluster = color_classes[s].edate
-						
-						svg_selectedcluster.append("rect")
-						.attr("class", "bar_selectedcluster")
-						.attr("x", grx_selectedcluster(u))
-						.attr("width", grx_selectedcluster(1))
-						.attr("y", 0)
-						.attr('fill', color_histo_selectedcluster)
-						.attr("height", gry_selectedcluster(nb_events_by_class[s]))	
-						.attr("transform", "translate(" + 0 + "," + (gheight_selectedcluster - gry_selectedcluster(nb_events_by_class[s])) + ")")	
-						.attr("bdate", bdate_selectedcluster)	
-						.attr("edate", edate_selectedcluster)
-						.attr("color_class", s)
-						.attr('color_histo', color_histo_selectedcluster)	
-						.attr('number_event', nb_events_by_class[s])
-						.attr('number_event_all', nb_events_all)					
-						.on("mouseover", handleMouseOver_selectedcluster)
-						.on("mouseout", handleMouseOut_selectedcluster);
-					}
-				} else {
-					for(var u=0; u<nb_events_by_class.length; u++){
-
-						var color_histo_selectedcluster = color_classes[u].color;
-						var bdate_selectedcluster = color_classes[u].bdate
-						var edate_selectedcluster = color_classes[u].edate
-						
-						svg_selectedcluster.append("rect")
-						.attr("class", "bar_selectedcluster")
-						.attr("x", grx_selectedcluster(u))
-						.attr("width", grx_selectedcluster(1))
-						.attr("y", 0)
-						.attr('fill', color_histo_selectedcluster)
-						.attr("height", gry_selectedcluster(nb_events_by_class[u]))	
-						.attr("transform", "translate(" + 0 + "," + (gheight_selectedcluster - gry_selectedcluster(nb_events_by_class[u])) + ")")	
-						.attr("bdate", bdate_selectedcluster)	
-						.attr("edate", edate_selectedcluster)
-						.attr("color_class", u)
-						.attr('color_histo', color_histo_selectedcluster)	
-						.attr('number_event', nb_events_by_class[u])
-						.attr('number_event_all', nb_events_all)		
-						.on("mouseover", handleMouseOver_selectedcluster)
-						.on("mouseout", handleMouseOut_selectedcluster);
-					}
-				}
+			var color_histo = "#000000";
 			
+			var bdate_bar = "";
+			var edate_bar = "";
+			var color_class_bar = "";
+			
+			var actual_day = new Date();
+			actual_day.setTime(date_jour*86400000);
+			
+			for(var g=0; g<nb_classes; g++){
+				var date_limit_down = Math.round(new Date(color_classes[g].bdate).getTime()/86400000);
+				var date_limit_up = Math.round(new Date(color_classes[g].edate).getTime()/86400000);
+				if(date_jour>=date_limit_down && date_jour<=date_limit_up){
+				  color_histo = color_classes[g].color
+				  
+					bdate_bar = color_classes[g].bdate;
+					edate_bar = color_classes[g].edate;
+					color_class_bar = g;
+				} 
 			}
 				
-		});
+			svg_selectedcluster.append("rect")
+				.attr("class", "bar_selectedcluster")
+				.attr("x", grx_selectedcluster(j))
+				.attr("width", grx_selectedcluster(1))
+				.attr("y", 0)
+				.attr('fill', color_histo)
+				.attr("height", gry_selectedcluster(nbr_case_day_array[j]))	
+				.attr("transform", "translate(" + 0 + "," + (gheight_selectedcluster - gry_selectedcluster(nbr_case_day_array[j])) + ")")		
+				.attr("bdate", bdate_bar)	
+				.attr("edate", edate_bar)
+				.attr("color_class", color_class_bar)
+				.attr('color_histo', color_histo)
+				.attr('number_event', nbr_case_day_array[j])
+				.attr('number_event_all', nb_events_all)					
+				.on("mouseover", handleMouseOver_selectedcluster)
+				.on("mouseout", handleMouseOut_selectedcluster);
+		}
+		
+			
+	});
 
 	map.addLayer(markersCluster);
 	
 	map_bounds = markersCluster.getBounds();
 	
-	create_histogram(date_max,date_min,data_events,nb_classes,color_classes);
 	
 }
 
@@ -659,6 +807,8 @@ function create_histogram(date_max,date_min,data_events,nb_classes,color_classes
 			}
 		}
 	}
+	
+	absolute_max_nb_event = max_nb_event;
 	
 	var grx = d3.scaleLinear()
 		.domain([0, nbr_jours]) 
@@ -733,6 +883,10 @@ function create_legend_cursors(number_of_class){
 	
 	for(var nc = 0; nc<(number_of_class-1); nc++){
 		create_date_selectors_slider(nc, nc + 1,  number_of_class,dataset_start,dataset_end);
+	}
+	
+	if(number_of_class * $(".div_date_selectors_slider").height() > $("#classes_border_selectors").height()){
+		$(".div_date_selectors_slider").height($("#classes_border_selectors").height()/number_of_class);
 	}
 	
 	create_color_legend();
@@ -1000,7 +1154,6 @@ function handleMouseOver(d, i) {  // Add interactivity
 			  number_of_cases_per_color = number_of_cases_per_color + parseInt(d3.select(all_bars._groups[0][r]).attr("number_cases_day"));
 		  }
 	  }
-	  console.log(color_histo,color_class,number_of_cases_day,number_of_cases_per_color)
 	  var bar_info_html = "";
 	  bar_info_html += "<div>";
 	  bar_info_html += "Classe " + color_class + "";
@@ -1079,6 +1232,253 @@ function handleMouseOut_selectedcluster(d, i) {
     }
 
 	
+/*
+		----------------------creation of the timelinecursor---------------
+*/
+var width_slider = $('#slider_div').width() -10;
+var height_slider = $('#slider_div').width();
+
+var svg2 = d3
+    .select("#slider_div")
+    .attr("class", "chart")
+    .append("svg")
+    .attr("width", width_slider)
+    .attr("height", height_slider);
+
+var time_interval = new Date($("#dataset_end").val()).getTime() - new Date($("#dataset_start").val()).getTime();
+var days_interval = time_interval / (1000 * 3600 * 24);
+var daydomain = [0, days_interval]
+var graphicdomain = [0, width_slider]	
+	
+
+//function called when the timeline cursor is dragged
+var dragged = function(e,d){
+	//function allowing to convert the timeline graphical space into a temporal duration
+	var scale_space_to_time =  d3.scaleLinear().domain(graphicdomain).range(daydomain);	
+	//function allowing to convert a temporal duration into a graphical space on the timeline
+	var scale_time_to_space =  d3.scaleLinear().domain(daydomain).range(graphicdomain);
+	//updating cursor position
+	if(event.x < 0){
+		d3.select(this).attr("cx", d.x = 0);
+	} else if(event.x > width_slider){
+		d3.select(this).attr("cx", d.x = width_slider);
+	} else{
+		d3.select(this).attr("cx", d.x = event.x);
+	}
+	//calculating the date corresponding to the cursor position
+	var time_offset = parseInt(scale_space_to_time(d3.select(this).attr("x")))*(1000 * 3600 * 24);
+	var new_time = new Date($("#dataset_start").val()).getTime() + time_offset;
+	current_time_value = new Date(new_time)
+	//updating map and current time label
+	var datestr = getDatestr(current_time_value);
+	$('#current_date_div').html(datestr);
+	
+}
+
+var drag = d3.drag()
+  .on("drag", dragged);
+
+//creation of the timeline horizontal axis
+svg2
+    .append("g")
+    .append("rect")
+    .attr("id", "slideraxis")
+    .attr("width", width_slider)
+    .attr("height", 2)
+    .attr("x", 0)
+    .attr("y", 16);
+//creation of the timeline cursor
+var cursor = svg2.append('circle')
+    .attr("id", "slidercursor")
+  .attr('cx', -2)
+  .attr('cy', 16)
+  .attr('r', 8)
+  .attr('stroke', 'black')
+  .attr('fill', '#69a3b2')
+	.call(drag);
+
+/*
+
+    .append("rect")
+    .attr("id", "slidercursor")
+    .attr("width", 4)
+    .attr("height", 16)
+    .attr("x", 0)
+    .attr("y", 16)
+	.attr('transform', 'translate(-2, -8)')
+*/
+
+
+/*
+	----------------------convert Javascript date in string date---------------
+*/
+function getDatestr() {
+	var day = current_time_value.getDate();
+	var month = current_time_value.getMonth() +1;
+	var daystr;
+	var monthstr;
+	if(day<10){
+		daystr = '0' + day;
+	} else {
+		daystr = '' + day + '';
+	}
+	if(month<10){
+		monthstr = '0' + month;
+	} else {
+		monthstr = '' + month + '';
+	}
+	return '2021-' + monthstr + '-' + daystr;
+}
+
+/*
+	----------------------animation---------------
+*/
+var animation_time = 1000;
+var timerId = null;
+var animation = false;	
+$('#current_date_div').html(getDatestr(current_time_value));
+$('#anim_div').html('animation : ' + animation);
+$('#anim_speed').html(animation_time + ' ms per day');
+
+function start(){
+	//function allowing to convert the timeline graphical space into a temporal duration
+	var scale_space_to_time =  d3.scaleLinear().domain(graphicdomain).range(daydomain);	
+	//function allowing to convert a temporal duration into a graphical space on the timeline
+	var scale_time_to_space =  d3.scaleLinear().domain(daydomain).range(graphicdomain);	
+	if(current_time_value.getTime() < new Date($("#dataset_end").val()).getTime()){
+		animation = true;
+		$('#anim_div').html('animation : ' + animation);
+		if (timerId !== null) {
+			clearInterval(timerId);
+			timerId = null;
+		}
+		timerId = setInterval(function(){ 
+			//function launched each 'animation_time' millisecond
+			if(current_time_value.getTime() == new Date($("#dataset_end").val()).getTime() || current_time_value.getTime() > (new Date($("#dataset_end").val()).getTime()-(1000 * 3600 * 24))){
+				stop();
+			}
+			
+			var old_current_time_value = new Date(current_time_value.getTime());
+			//adding an other time to current time each 'animation_time' millisecond
+			current_time_value.setDate(current_time_value.getDate() + 1);
+			
+			//updating the map and the current time label
+			var datestr = getDatestr(current_time_value);
+			$('#current_date_div').html(datestr);
+
+			if($("#animation_activation").val() == "animation_non_active"){
+				
+			} else if($("#animation_activation").val() == "animation_active"){
+				//set event to show
+								
+				var event_to_show = [];
+				for(var g=0; g<data_events.length; g++){
+					var date_event = new Date(data_events[g].date)
+					if(date_event.getTime()>=old_current_time_value.getTime() && date_event.getTime()<current_time_value.getTime()){
+					  event_to_show.push(data_events[g]);
+					} 
+				}
+				load_data_to_markersCluster(event_to_show);
+			}
+			
+			//slider update
+			var time_offset = current_time_value.getTime() - new Date($("#dataset_start").val()).getTime();
+			var days_offset = time_offset / (1000 * 3600 * 24);
+			d3.select("#slidercursor").attr("cx", scale_time_to_space(days_offset));
+				
+		}, animation_time);
+	} else {
+		stop();
+	}
+	
+}
+
+function stop(){
+	animation = false;
+	$('#anim_div').html('animation : ' + animation);
+	if (timerId !== null) {
+		//stopping the animation
+		clearInterval(timerId);
+		timerId = null;
+	}
+}
+
+function reset_function(){
+	//function allowing to convert the timeline graphical space into a temporal duration
+	var scale_space_to_time =  d3.scaleLinear().domain(graphicdomain).range(daydomain);	
+	//function allowing to convert a temporal duration into a graphical space on the timeline
+	var scale_time_to_space =  d3.scaleLinear().domain(daydomain).range(graphicdomain);	
+	//stopping the animation
+	stop();
+	//set the current time to the first value date
+	current_time_value= new Date($("#dataset_start").val());
+	//updating the map and the current time label
+	var datestr = getDatestr(current_time_value);
+	$('#current_date_div').html(datestr);
+	
+	markersCluster.clearLayers();
+	
+	//updating slider
+	var time_offset = current_time_value.getTime() - new Date($("#dataset_start").val()).getTime();
+	var days_offset = time_offset / (1000 * 3600 * 24);
+	d3.select("#slidercursor").attr("x", scale_time_to_space(days_offset));
+}
+
+function decrease(){
+	//increasing animation_time to slow down the animation
+	if(animation_time<=3000){
+		animation_time = animation_time + 100;
+		$('#anim_speed').html(animation_time + ' ms per day');
+	}
+	if(animation == true){
+		start();
+	} 
+}
+
+function increase(){
+	//decreasing animation_time to speed up the animation
+	if(animation_time>=100){
+		animation_time = animation_time - 100;
+		$('#anim_speed').html(animation_time + ' ms per day');
+	}
+	if(animation == true){
+		start();
+	} 
+}
+
+//initializing the control
+$("#start").click(function() {
+  start();
+})
+$("#stop").click(function() {
+  stop();
+})
+$("#stop").click(function() {
+  stop();
+})
+$("#reset").click(function() {
+  reset_function();
+})
+$("#IS").click(function() {
+  increase();
+})
+	
+function load_data_to_markersCluster(list_of_event){
+	
+	for (var i = 0; i < list_of_event.length; i++) {
+		var latLng = new L.LatLng(list_of_event[i].lat, list_of_event[i].lon);
+		var marker = new L.Marker(latLng, {date: list_of_event[i].date});
+		
+		
+		
+		markersCluster.addLayer(marker);
+		
+	}
+
+	
+}
 
 
 
+ 
+	
