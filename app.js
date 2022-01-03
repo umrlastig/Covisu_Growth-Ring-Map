@@ -1,69 +1,45 @@
+// ------------------- main function ------------------
 
 
-
-
-//IMPORTANT CHANGER LES TRUCS COMMENTES ET FAIRE LA SELECTION SUR LES DATES AVANT LA CLUSTERISATION EN PRENANT LA DATE MIN ET MAX DES COULEURS
-
-//var nb_classes = 9;
-//var cst_area = 12;
-//var agg_radius = 20;
-//var color_classes = color_classes_9_ter
-
-$('body').height($(window).height());
-$('body').width($(window).width()-10);
-
-$('#div_color_legend').height($(window).height()*0.8);
-$('#div_color_legend').width($(window).width()*0.3);
-
-
-$('#animation_activation').val('animation_non_active');
-
+//app global variables
 var lat_map = 46.90296;
 var lng_map = 1.90925;
 var zoom_map = 6;
 var map_bounds;
 var map;
 
-var absolute_max_nb_event = 0;;
+var absolute_max_nb_event = 0;									//used to define the height of the temporal diagram
+var selected_graph_max_value = 'relative_max';					//used to define the height of the temporal diagram related to a selected glyph, according to the absolute maximum of events per day, or according to the maximum of events for this glyph
+var data_events = [];											//used to store the event dataset
+var legend_status = "legend_activated";							//old parameter. has to be kept with this value
+var current_time_value= new Date($("#dataset_start").val());	//used for animation
+var markersCluster;												//used to store the markercluster layer, used to cluster the element on the map
+var event_to_keep;												//used to store the event selected from the dataset according to the dates selected in the legend interface
 
-var selected_graph_max_value = 'relative_max';
+//website's elements size
+$('body').height($(window).height());
+$('body').width($(window).width()-10);
 
-var data_events = [];
+$('#div_color_legend').height($(window).height()*0.8);
+$('#div_color_legend').width($(window).width()*0.3);
 
-var legend_status = "legend_activated";
-//var legend_status == "legend_non_activated";
+$('#animation_activation').val('animation_non_active');
 
-
-var current_time_value= new Date($("#dataset_start").val());
-
-
-var markersCluster;
-
-var event_to_keep;
-
-/*
-$("#update_button").click(function() {
-	
-	update_map();
-  
-});
-*/
-
+//changing the height of the temporal diagram related to a selected glyph
 $("#selected_graph_max_value").on("change",function() {
-	
 	selected_graph_max_value = $('#selected_graph_max_value').val();
 });	
 
+//open animation menu
 $("#open_animation_menu").click(function() {
-	console.log("okok")
 	if($("#animation_div").css("visibility") == "hidden"){
 		$("#animation_div").css("visibility","visible");
 	} else {
 		$("#animation_div").css("visibility","hidden");
-	}
-	
+	}	
 });	
 
+//open legend menu
 $("#legend_menu_button").click(function() {
 	
 	if($("#div_color_legend").css("visibility") == "hidden"){
@@ -74,33 +50,17 @@ $("#legend_menu_button").click(function() {
 	
 });	
 
-$("#number_ofclasses").on("change",function() {
-	
-	create_legend_cursors(parseInt($(this).val()));
-	
-	update_map();
-	
-});
-
-$("#number_ofclasses").on("change",function() {
-		
-	update_map();
-	
-});
-
-$("#date_order").on("change",function() {
-		
-	update_map();
-	
-});
-
+//changing how the size of the ring represents the number of events (radius or area)
 $("#glyph_construction_type").on("change",function() {
-		
 	update_map();
-	
 });
 
+//changing the order of the rings position inside a glyph
+$("#date_order").on("change",function() {
+	update_map();
+});
 
+//updating the legend and the temporal diagram during the dynamic modification of the number of temporal classes
 $("#number_ofclasses").on("input",function() {
 	
 	create_legend_cursors(parseInt($(this).val()));
@@ -155,11 +115,20 @@ $("#number_ofclasses").on("input",function() {
 	}
 	create_histogram(date_max,date_min,data_events,nb_classes,color_classes);
 	
+	
+});
+
+//updating the map after the dynamic modification of the number of temporal classes
+$("#number_ofclasses").on("change",function() {
+	create_legend_cursors(parseInt($(this).val()));
+	update_map();
 });
 
 
+//changing the color palette for the representation of events according to their temporal component
 $("#color_palette").on("change",function() {
 	
+	//test to see which is the selected color palette (some of them have been created for specific timesteps for the different time subperiods)
 	if($("#color_palette").val() == "SM_Maxime_1"){
 		$('#number_ofclasses').hide();
 		$('#number_ofclasses').val(8);
@@ -242,20 +211,18 @@ $("#color_palette").on("change",function() {
 		$('.range_date_selectors_slider').show()
 	}
 	
-	
-	
 	create_color_legend();
 	
 	update_map();
 });
 
+//changing the order of the colored rings in the glyphs
 $("#color_order").on("change",function() {
 	create_color_legend();
-	
 	update_map();
 });
 
-
+// changing graphical size the punctual entities in the map
 $("#cst_area").on("change",function() {	
 	update_map();
 });
@@ -264,6 +231,7 @@ $("#cst_area").on("input",function() {
 	$("#cst_area_label").html($("#cst_area").val());
 });
 
+// changing aggregation radius for the punctual entities in the map
 $("#radius").on("change",function() {	
 	update_map();
 });
@@ -284,7 +252,7 @@ $("#animation_activation").on("change",function() {
 	
 });
 
-
+//uploading data
 $("#data_file").on("change",function(e) {
 	var file = e.target.files[0];
 	  if (!file) {
@@ -344,8 +312,6 @@ $("#data_file").on("change",function(e) {
 		}
 
 		create_color_legend();
-		
-		
 		update_map();
 		
 		map_center = [
@@ -366,12 +332,17 @@ for(var nc = 0; nc<(parseInt($("#number_ofclasses").val())-1); nc++){
 	create_date_selectors_slider(nc, nc + 1,  parseInt($("#number_ofclasses").val()),new Date($("#dataset_start").val()),new Date($("#dataset_end").val()));
 }
 
+// first color legend creation
 create_color_legend();
 
-
+// first map creation
 update_map();
 
+// ------------------- end main function ------------------
+
+
 function update_map(){
+	//refresh map and create new visualization according to chosen parameters
 	
 	var cst_area = parseInt(document.getElementById("cst_area").value)
 	var agg_radius = parseInt(document.getElementById("radius").value)
@@ -379,10 +350,13 @@ function update_map(){
 		
 	var color_classes;
 	
+	// creation of an array of color classes object, used to define the number of events for each ring
 	if(legend_status == "legend_activated"){
 		color_classes = []; 
 		if($("#date_order").val() == "inner_new"){
+			//newest events at the center
 			for(var f=0; f<d3.selectAll(".bar_legend_color")._groups[0].length; f++){
+				//creating the color classes from the legend elements
 				
 				var bdate_day = d3.select(d3.selectAll(".bar_legend_color")._groups[0][f]).attr("bdate_legend").split('-')[2];
 				var bdate_month = d3.select(d3.selectAll(".bar_legend_color")._groups[0][f]).attr("bdate_legend").split('-')[1];
@@ -449,16 +423,20 @@ function update_map(){
 					new_edate_month_string = new_edate_month;
 				}
 				
+				//color class object, with begin date, end date, corresponding color, and number of days (length of the color class corresponding period)
 				var new_color_class = {
 					'bdate': bdate_year + '-' + new_bdate_month_string + '-' + new_bdate_day_string,
 					'edate': edate_year + '-' + new_edate_month_string + '-' + new_edate_day_string,
 					'color': d3.select(d3.selectAll(".bar_legend_color")._groups[0][f]).attr("color_legend"),
 					'legend_bar_value': d3.select(d3.selectAll(".bar_legend_color")._groups[0][f]).attr("legend_bar_value")
 				}
+				console.log(new_color_class)
 				color_classes.push(new_color_class);
 			}
 		} else if($("#date_order").val() == "inner_old"){	
+			//oldest events at the center
 			for(var f=0; f<d3.selectAll(".bar_legend_color")._groups[0].length; f++){
+				//creating color classes from legend elements
 				var new_color_class = {
 					'bdate':d3.select(d3.selectAll(".bar_legend_color")._groups[0][d3.selectAll(".bar_legend_color")._groups[0].length - 1 - f]).attr("bdate_legend"),
 					'edate':d3.select(d3.selectAll(".bar_legend_color")._groups[0][d3.selectAll(".bar_legend_color")._groups[0].length - 1 - f]).attr("edate_legend"),
@@ -493,7 +471,7 @@ function update_map(){
 	}
 	
 	
-		
+	//filtering event dataset according to the min and max date chosen in the legend interface
 	for(var g=0; g<data_events.length; g++){
 		var date_event = new Date(data_events[g].date)
 		if(date_event.getTime()>=date_min && date_event.getTime()<=date_max){
@@ -501,6 +479,8 @@ function update_map(){
 		} 
 	}
   
+  
+	//creating new map object
 	$("#div_map_container").empty();
 	$("#div_map_container").html("<div id='divmap'></div>")
 	
@@ -520,14 +500,7 @@ function update_map(){
 		}
 	)
 	
-	/*
-	var stamenToner = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.{ext}', {
-		attribution: 'Map tiles by Stamen Design, CC BY 3.0 — Map data © OpenStreetMap',
-		subdomains: 'abcd',
-		minZoom: 0,
-		maxZoom: 20,
-		ext: 'png'
-	});*/
+	//adding basemap
 	var stamenToner = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
 		attribution: 'Map tiles by Stamen Design, CC BY 3.0 — Map data © OpenStreetMap',
 		subdomains: 'abcd',
@@ -538,17 +511,20 @@ function update_map(){
 
 	map.addLayer(stamenToner);
 
+	//adding the markercluster layer, managing the graphic entities clustering
 	markersCluster = new L.markerClusterGroup({
 				maxClusterRadius: agg_radius,
 				singleMarkerMode: true,
 				spiderfyOnMaxZoom: false,
 				iconCreateFunction: function (cluster) {
 					
+					//creating nb_events_by_class array, containing the number of events in each color class for each glyphs
 					var nb_events_by_class = [];
 					for(var i=0; i<nb_classes; i++){
 					  nb_events_by_class.push(0);
 					}
 					cluster.getAllChildMarkers().forEach((m)=>{ 
+						//counting the number of events in each color class for each glyphs, and updating the value of the corresponding elements in nb_events_by_class array
 						
 						var date_event = new Date(m.options.date);
 						
@@ -560,11 +536,14 @@ function update_map(){
 							} 
 						}
 					})
+					
+					//creating the glyphs
 					var nb_events_by_class_sum = 0 
 					for(var i =0; i<nb_events_by_class.length; i++){
 						nb_events_by_class_sum = nb_events_by_class_sum + nb_events_by_class[i];
 					}
 					var portion_done = 0;
+					//the area of the entire glyph is calculated from the entire number of events
 					var max_area = cluster.getChildCount() * cst_area;
 					//var max_area = nb_events_by_class_sum * cst_area;
 					var max_radius = Math.sqrt(max_area/Math.PI);
@@ -580,6 +559,11 @@ function update_map(){
 					
 					var selected_glyph_type = $('#glyph_construction_type').val();
 					
+					// the different rings are created here
+					// the rings are in fact the visible part of circles placed each above others
+					// the outer ring is in fact the first circle created with the largest possible area/radius calculated from the entire number of events for the glyph
+					// for each circle created, we substract the number of events in the corresponding time period from the number of events in the glyph
+					// the inner ring is in fact the last circle created with an area/radius calculated from the rest of the number of events 
 					if(selected_glyph_type == "area_type"){
 						if(nb_events_by_class_sum>0){
 							for(var i =0; i<nb_events_by_class.length; i++){
@@ -651,6 +635,7 @@ function update_map(){
 
 
 	markersCluster.on('clusterclick', function (a) {
+		//when the user click on a glyph in the map, an additionnal histogram is calculated here
 		
 		var nbr_jours= parseInt((date_max - date_min)/86400000 +1);
 		
@@ -772,8 +757,7 @@ function update_map(){
 }
 
 function create_histogram(date_max,date_min,data_events,nb_classes,color_classes){
-	
-	
+	//create main temporal histogram from dataset date max and date min, events dataset, the number of classes, and the used color scale	
 	$("#div_interface_graphic").empty();
 	$("#div_interface_graphic").html("<div id='div_interface_graphic_container'></div>")
 	
@@ -873,6 +857,7 @@ function create_histogram(date_max,date_min,data_events,nb_classes,color_classes
 
 
 function create_legend_cursors(number_of_class){
+	//create interface cursors in legend interface according to the selected number of classes in order to modify the color legend
 	
 	$("#number_ofclasses_label").html(number_of_class +  " classes");
 	
@@ -895,6 +880,7 @@ function create_legend_cursors(number_of_class){
 
 
 function create_date_selectors_slider(class_id_ante, class_id_post, number_total_of_class,dataset_start,dataset_end){
+	//create interface cursors in order to modify the temporal extent of each temporal class 
 	
 	var id_div = "div_date_selectors_slider_classes_" + class_id_ante + "_to_" + class_id_post + "";
 	var class_div = "div_date_selectors_slider";
@@ -902,6 +888,8 @@ function create_date_selectors_slider(class_id_ante, class_id_post, number_total
 	var class_range = "range_date_selectors_slider";
 	var id_p = "p_date_selectors_slider_classes_" + class_id_ante + "_to_" + class_id_post + "";;
 	var class_p = "p_date_selectors_slider";
+	
+	//creating html elements
 	
 	var html_to_input = "";
 	html_to_input += "<div id=" + id_div + " class=" + class_div + " 'class_id_ante'='" + class_id_ante + "' 'class_id_post'='" + class_id_post + "' >";
@@ -921,6 +909,8 @@ function create_date_selectors_slider(class_id_ante, class_id_post, number_total
 	var border_year_ini = border_date_ini.getFullYear();
 	
 	$("#" + id_p + "").html("" + border_day_ini + "/" + border_month_ini + "/" + border_year_ini);
+	
+	//updating JS events
 	
 	$("#" + id_range + "").on("change",function() {
 		
@@ -1019,6 +1009,7 @@ function create_date_selectors_slider(class_id_ante, class_id_post, number_total
 }
 
 function create_color_legend(){
+	//recreate new color legend according to chosen parameters
 	
 	$("#color_legend").html("");
 	var gwidth_color_legend = $("#color_legend").width() - 10;
@@ -1297,16 +1288,7 @@ var cursor = svg2.append('circle')
   .attr('fill', '#69a3b2')
 	.call(drag);
 
-/*
 
-    .append("rect")
-    .attr("id", "slidercursor")
-    .attr("width", 4)
-    .attr("height", 16)
-    .attr("x", 0)
-    .attr("y", 16)
-	.attr('transform', 'translate(-2, -8)')
-*/
 
 
 /*
