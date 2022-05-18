@@ -16,6 +16,32 @@ var current_time_value= new Date($("#dataset_start").val());	//used for animatio
 var markersCluster;												//used to store the markercluster layer, used to cluster the element on the map
 var event_to_keep;												//used to store the event selected from the dataset according to the dates selected in the legend interface
 
+var focus_on = false;												//to change color of a selected extend
+var start_date_focus;
+var end_date_focus;
+var start_date_focus_slider;
+var end_date_focus_slider;
+var percentage_value_start = 10;
+var percentage_value_end = 30;
+var list_classes;
+
+var ante_wave = null;
+var antepic = null;
+var pic = null;
+var postpic = null;
+var post_wave = null;
+
+//Moving the labels along with the number of classes
+var nb_ofclasses_rg = document.getElementById("number_ofclasses");
+$("#number_ofclasses_label").parent().css({position: 'relative'});
+$("#number_ofclasses_label").css({top: -20, left: ((nb_ofclasses_rg.value-4)*$("#number_ofclasses").width()/7-30)+"px", position:'absolute'});
+
+$("#number_ofclasses").on("input", function() {
+	$("#number_ofclasses_label").css({top: -20, left: ((nb_ofclasses_rg.value-4)*$("#number_ofclasses").width()/7-25)+"px", position:'absolute'});
+})
+
+
+
 //website's elements size
 $('body').height($(window).height());
 $('body').width($(window).width()-10);
@@ -127,7 +153,9 @@ $("#number_ofclasses").on("change",function() {
 
 //changing the color palette for the representation of events according to their temporal component
 $("#color_palette").on("change",function() {
-	
+	//$("#checkbox_focus_container").css("visibility","visible");
+	$('#number_ofclasses_label').css({left : 10, top : -5});
+
 	//test to see which is the selected color palette (some of them have been created for specific timesteps for the different time subperiods)
 	if($("#color_palette").val() == "SM_Maxime_1"){
 		$('#number_ofclasses').hide();
@@ -205,13 +233,121 @@ $("#color_palette").on("change",function() {
 		$('#p_date_selectors_slider_classes_8_to_9').html('17/09/2021');
 		$('#p_date_selectors_slider_classes_9_to_10').html('22/09/2021');
 		$('#p_date_selectors_slider_classes_10_to_11').html('26/09/2021');
-	}  else {
+	}  else if ($("#color_palette").val() == "JB_phases_vague"){
+		//$("#checkbox_focus_container").css("visibility","hidden");
+		$('#number_ofclasses').hide();
+		$('#number_ofclasses').val(5);
+		$('#number_ofclasses_label').html('5 classes');
+		create_legend_cursors(5);
+		$('#range_date_selectors_slider_classes_0_to_1').val(18);
+		$('#range_date_selectors_slider_classes_1_to_2').val(23);
+		$('#range_date_selectors_slider_classes_2_to_3').val(32);
+		$('#range_date_selectors_slider_classes_2_to_3').val(48);
+		
+		$('#p_date_selectors_slider_classes_0_to_1').html('26/08/2021');
+		$('#p_date_selectors_slider_classes_1_to_2').html('29/08/2021');
+		$('#p_date_selectors_slider_classes_2_to_3').html('04/09/2021');
+		$('#p_date_selectors_slider_classes_3_to_4').html('12/09/2021');
+
+	} else if ($("#color_palette").val() == "JB_phases_vague_focus"){
+		//$("#checkbox_focus_container").css("visibility","hidden");
+		$('#number_ofclasses').hide();
+		$('#number_ofclasses').val(5);
+		$('#number_ofclasses_label').html('5 classes');
+		create_legend_cursors(5);
+		$('#range_date_selectors_slider_classes_0_to_1').val(18);
+		$('#range_date_selectors_slider_classes_1_to_2').val(23);
+		$('#range_date_selectors_slider_classes_2_to_3').val(32);
+		$('#range_date_selectors_slider_classes_2_to_3').val(48);
+		
+		$('#p_date_selectors_slider_classes_0_to_1').html('26/08/2021');
+		$('#p_date_selectors_slider_classes_1_to_2').html('29/08/2021');
+		$('#p_date_selectors_slider_classes_2_to_3').html('04/09/2021');
+		$('#p_date_selectors_slider_classes_3_to_4').html('12/09/2021');
+
+	} else if ($("#color_palette").val() == "JB_phases_vague_pic"){
+		//$("#checkbox_focus_container").css("visibility","hidden");
+		$('#number_ofclasses').hide();
+		$('#number_ofclasses').val(4);
+		$('#number_ofclasses_label').html('4 classes');
+		create_legend_cursors(4);
+		$('#range_date_selectors_slider_classes_0_to_1').val(22);
+		$('#range_date_selectors_slider_classes_1_to_2').val(33);
+		$('#range_date_selectors_slider_classes_2_to_3').val(36);
+		
+		$('#p_date_selectors_slider_classes_0_to_1').html('28/08/2021');
+		$('#p_date_selectors_slider_classes_1_to_2').html('03/09/2021');
+		$('#p_date_selectors_slider_classes_2_to_3').html('08/09/2021');
+
+	} else if ($("#color_palette").val() == "JB_multi_vagues"){
+		//$("#checkbox_focus_container").css("visibility","hidden");
+		$('#number_ofclasses').hide();
+		$('#number_ofclasses').val(4);
+		$('#number_ofclasses_label').html('4 classes');
+		create_legend_cursors(4);
+		$('#range_date_selectors_slider_classes_0_to_1').val(11);
+		$('#range_date_selectors_slider_classes_1_to_2').val(33);
+		$('#range_date_selectors_slider_classes_2_to_3').val(73);
+		
+		$('#p_date_selectors_slider_classes_0_to_1').html('21/08/2021');
+		$('#p_date_selectors_slider_classes_1_to_2').html('03/09/2021');
+		$('#p_date_selectors_slider_classes_2_to_3').html('26/09/2021');
+
+	} else if ($("#color_palette").val() == "JB_evt_politique"){
+		//$("#checkbox_focus_container").css("visibility","hidden");
+		$('#number_ofclasses').hide();
+		$('#number_ofclasses').val(4);
+		$('#number_ofclasses_label').html('4 classes');
+		create_legend_cursors(4);
+		$('#range_date_selectors_slider_classes_0_to_1').val(3);
+		$('#range_date_selectors_slider_classes_1_to_2').val(26);
+		$('#range_date_selectors_slider_classes_2_to_3').val(36);
+		
+		$('#p_date_selectors_slider_classes_0_to_1').html('22/08/2021');
+		$('#p_date_selectors_slider_classes_1_to_2').html('29/08/2021');
+		$('#p_date_selectors_slider_classes_2_to_3').html('05/09/2021');
+
+	} else if ($("#color_palette").val() == "JB_auto_vague"){
+		detect_structural_breaks();
+		$('#number_ofclasses').hide();
+		$('#number_ofclasses').val(4);
+		$('#number_ofclasses_label').html('4 classes');
+		create_legend_cursors(4);
+		$('#range_date_selectors_slider_classes_0_to_1').val(ante_wave.id*100/58);
+		$('#range_date_selectors_slider_classes_1_to_2').val(pic.id*100/58);
+		$('#range_date_selectors_slider_classes_2_to_3').val(post_wave.id*100/58);
+		
+		display_date_slider($("#range_date_selectors_slider_classes_0_to_1").val(), "p_date_selectors_slider_classes_0_to_1");
+		display_date_slider($("#range_date_selectors_slider_classes_1_to_2").val(), "p_date_selectors_slider_classes_1_to_2");
+		display_date_slider($("#range_date_selectors_slider_classes_2_to_3").val(), "p_date_selectors_slider_classes_2_to_3");
+		//$('#p_date_selectors_slider_classes_0_to_1').html('22/08/2021');
+		//$('#p_date_selectors_slider_classes_1_to_2').html('29/08/2021');
+		//$('#p_date_selectors_slider_classes_2_to_3').html('05/09/2021');
+
+	} else if ($("#color_palette").val() == "JB_auto_vague_3class"){
+		detect_structural_breaks();
+		$('#number_ofclasses').hide();
+		$('#number_ofclasses').val(5);
+		$('#number_ofclasses_label').html('5 classes');
+		create_legend_cursors(5);
+		$('#range_date_selectors_slider_classes_0_to_1').val(ante_wave.id*100/58);
+		$('#range_date_selectors_slider_classes_1_to_2').val(antepic.id*100/58);
+		$('#range_date_selectors_slider_classes_2_to_3').val(postpic.id*100/58);
+		$('#range_date_selectors_slider_classes_3_to_4').val(post_wave.id*100/58);
+		
+		display_date_slider($("#range_date_selectors_slider_classes_0_to_1").val(), "p_date_selectors_slider_classes_0_to_1");
+		display_date_slider($("#range_date_selectors_slider_classes_1_to_2").val(), "p_date_selectors_slider_classes_1_to_2");
+		display_date_slider($("#range_date_selectors_slider_classes_2_to_3").val(), "p_date_selectors_slider_classes_2_to_3");
+		display_date_slider($("#range_date_selectors_slider_classes_3_to_4").val(), "p_date_selectors_slider_classes_3_to_4");
+
+	} else {
 		$("#number_ofclasses").attr('max',11)
 		$('#number_ofclasses').show()
 		$('.range_date_selectors_slider').show()
 	}
 	
 	create_color_legend();
+	create_color_legend_focus();
 	
 	update_map();
 });
@@ -219,6 +355,7 @@ $("#color_palette").on("change",function() {
 //changing the order of the colored rings in the glyphs
 $("#color_order").on("change",function() {
 	create_color_legend();
+	create_color_legend_focus();
 	update_map();
 });
 
@@ -312,6 +449,7 @@ $("#data_file").on("change",function(e) {
 		}
 
 		create_color_legend();
+		create_color_legend_focus();
 		update_map();
 		
 		map_center = [
@@ -430,7 +568,6 @@ function update_map(){
 					'color': d3.select(d3.selectAll(".bar_legend_color")._groups[0][f]).attr("color_legend"),
 					'legend_bar_value': d3.select(d3.selectAll(".bar_legend_color")._groups[0][f]).attr("legend_bar_value")
 				}
-				console.log(new_color_class)
 				color_classes.push(new_color_class);
 			}
 		} else if($("#date_order").val() == "inner_old"){	
@@ -875,6 +1012,7 @@ function create_legend_cursors(number_of_class){
 	}
 	
 	create_color_legend();
+	create_color_legend_focus();
 	
 }
 
@@ -886,6 +1024,8 @@ function create_date_selectors_slider(class_id_ante, class_id_post, number_total
 	var class_div = "div_date_selectors_slider";
 	var id_range = "range_date_selectors_slider_classes_" + class_id_ante + "_to_" + class_id_post + "";
 	var class_range = "range_date_selectors_slider";
+	var id_label = "p_label_range_"+ class_id_ante + "_to_" + class_id_post + "";
+	var class_label = "p_label_date_selector"
 	var id_p = "p_date_selectors_slider_classes_" + class_id_ante + "_to_" + class_id_post + "";;
 	var class_p = "p_date_selectors_slider";
 	
@@ -893,6 +1033,7 @@ function create_date_selectors_slider(class_id_ante, class_id_post, number_total
 	
 	var html_to_input = "";
 	html_to_input += "<div id=" + id_div + " class=" + class_div + " 'class_id_ante'='" + class_id_ante + "' 'class_id_post'='" + class_id_post + "' >";
+	html_to_input += "<p id=" + id_label + " class=" + class_label + "> Limit classes " + (class_id_ante+1) + " - " + (class_id_post+1) + "</p>";
 	html_to_input += "<input type='range' id=" + id_range + " class=" + class_range + "  name='date_selectors_slider_classes_" + class_id_ante + "_to_" + class_id_post + "' min='0' max='100' value='" + parseInt((class_id_post/number_total_of_class)*100) + "' step='1'  'class_id_ante'='" + class_id_ante + "' 'class_id_post'='" + class_id_post + "' >";
 	html_to_input += "<p  id=" + id_p + " class=" + class_p + " 'class_id_ante'='" + class_id_ante + "' 'class_id_post'='" + class_id_post + "' >Exemple</p>";
 	html_to_input += "</div>";
@@ -909,9 +1050,24 @@ function create_date_selectors_slider(class_id_ante, class_id_post, number_total
 	var border_year_ini = border_date_ini.getFullYear();
 	
 	$("#" + id_p + "").html("" + border_day_ini + "/" + border_month_ini + "/" + border_year_ini);
+
+	//Moving label and date along the range input
+	var rangeSlider = document.getElementById(id_range);
+	var range_width = $("#" + id_range + "").width();
+	$("#" + id_p + "").parent().css({position: 'relative'});
+	$("#" + id_p + "").css({top: 30, left: (rangeSlider.value*range_width/100)+"px", position:'absolute'});
+	$("#" + id_label + "").css({top: -5, left: (rangeSlider.value*range_width/100)+"px", position:'absolute'});
+
 	
+	
+	$("#" + id_range + "").on("input", function() {
+		var rangeSlider = document.getElementById(id_range);
+		$("#" + id_p + "").css({top: 30, left: (rangeSlider.value*range_width/100)+"px", position:'absolute'});
+		$("#" + id_label + "").css({top: -5, left: (rangeSlider.value*range_width/100)+"px", position:'absolute'});
+	})
+
 	//updating JS events
-	
+
 	$("#" + id_range + "").on("change",function() {
 		
 		try {
@@ -942,6 +1098,7 @@ function create_date_selectors_slider(class_id_ante, class_id_post, number_total
 			
 		
 			create_color_legend();
+			create_color_legend_focus();
 							
 			var color_classes;
 		
@@ -1012,8 +1169,8 @@ function create_color_legend(){
 	//recreate new color legend according to chosen parameters
 	
 	$("#color_legend").html("");
-	var gwidth_color_legend = $("#color_legend").width() - 10;
-	var gheight_color_legend = $("#color_legend").height() -10;
+	var gwidth_color_legend = $("#color_legend").width();
+	var gheight_color_legend = $("#color_legend").height();
 	
 	//create new graph for the cluster 
 	var grx_color_legend = d3.scaleLinear()
@@ -1031,7 +1188,7 @@ function create_color_legend(){
 		
 	var selected_color_class = $('#color_class_select').val();
 	var color_classes_ini = color_scales_palettes[$("#color_palette").val()][$("#number_ofclasses").val()];
-		
+
 	var color_classes = [];
 	if($("#color_order").val() == "right_order"){
 		for(var t=0; t<color_classes_ini.length; t++){
@@ -1058,7 +1215,7 @@ function create_color_legend(){
 			if(u == 0){
 				x_legend = 0;
 				width_legend = parseInt($("#range_date_selectors_slider_classes_" + u + "_to_" + (u+1) + "").val()) - x_legend;
-				
+
 				bdate_legend = $("#dataset_start").val();
 				var edate_string = $("#p_date_selectors_slider_classes_" + u + "_to_" + (u+1) + "").html();
 				edate_legend = edate_string.split("/")[2] + "-" + edate_string.split("/")[1] + "-" + edate_string.split("/")[0];
@@ -1083,6 +1240,8 @@ function create_color_legend(){
 			.attr("class", "bar_legend_color")
 			.attr("x", grx_color_legend(x_legend))
 			.attr("width", grx_color_legend(width_legend))
+			.attr("x_legend", x_legend)
+			.attr("width_legend", width_legend)
 			.attr("y", 0)
 			.attr('fill', color_legend)
 			.attr("height",gry_color_legend(1))
@@ -1109,6 +1268,8 @@ function create_color_legend(){
 		.attr("class", "bar_legend_color")
 		.attr("x", grx_color_legend(x_legend))
 		.attr("width", grx_color_legend(width_legend))
+		.attr("x_legend", x_legend)
+		.attr("width_legend", width_legend)
 		.attr("y", 0)
 		.attr('fill', color_legend)
 		.attr("height",gry_color_legend(1))
@@ -1461,6 +1622,573 @@ function load_data_to_markersCluster(list_of_event){
 }
 
 
+//Choice of a extend in the user to apply a different color on it
 
- 
+window.onload = update_slider_focus();
+ $("#checkbox_focus").on('click', function() {
+    if(this.checked) {
+		focus_on = true;
+		$("#slider_focus_container").css("visibility","visible");
+		update_slider_focus();
+		create_color_legend();
+		create_color_legend_focus();
+		update_map();
+    } else {
+		focus_on = false;
+    	$("#slider_focus_container").css("visibility","hidden");
+		create_color_legend();//create_legend_cursors($("#number_ofclasses").val());
+		update_map();
+    }
+});
+
+//Updates the limits of the legend colors according to the slider of focus
+function update_slider_focus(){
+     
+	range = $("#range_focus")
+	range.slider({
+		min: 0,
+		max: 100,
+		values: [10, 20, 30]
+	});
+
+	range.on( "slide", function(event, ui){
+		          
+        mean = (range.slider('values', 0) + range.slider('values', 2))/2;
+
+        if (ui.handleIndex === 0){
+            range.slider('values', 1, mean);
+        } 
+      	else if (ui.handleIndex === 2){
+        	range.slider('values', 1, mean);
+        } 
+      	else if (ui.handleIndex === 1){
+        	extend = range.slider('values', 2) - range.slider('values', 0);
+            range.slider('values', 0, ui.value - (extend/2));
+			range.slider('values', 2, ui.value + (extend/2));
+		}
+
+		
+		//create_legend_cursors($("#number_ofclasses").val());
+		update_color_legend_focus();
+		create_color_legend();
+		create_color_legend_focus();
+	});
+		
+	range.on("slidechange", function( event, ui ) {
+		
+		update_map();
+	});
+};
+
+//Updates the variables that contains the slider of focus extend
+function update_color_legend_focus() {
+
+	// Get the dates corresponding to the focus extend
+	range = $("#range_focus");
+	dataset_start = new Date($("#dataset_start").val());
+	dataset_end = new Date($("#dataset_end").val());
+
+	percentage_value_start = parseFloat(range.slider('values', 0));
+	var delta_time_start = (dataset_end.getTime() - dataset_start.getTime())*(percentage_value_start/100);
+	percentage_value_end = parseFloat(range.slider('values', 2));
+	var delta_time_end = (dataset_end.getTime() - dataset_start.getTime())*(percentage_value_end/100);
+
+	start_date_focus = new Date();
+	start_date_focus.setTime(dataset_start.getTime() + parseFloat(delta_time_start));
+	end_date_focus = new Date();
+	end_date_focus.setTime(dataset_start.getTime() + parseFloat(delta_time_end));
+
+	//end_date_focus.setTime(dataset_start.getTime() + parseFloat(delta_time_end) + 86400000);
+	//console.log(end_date_focus)
 	
+	var border_day_ini;
+	if(start_date_focus.getDate()<10) {
+		border_day_ini = "0" + start_date_focus.getDate()
+	} else {
+		border_day_ini = "" + start_date_focus.getDate() + ""
+	}
+	var border_month_ini;
+	if((start_date_focus.getMonth() + 1)<10) {
+		border_month_ini = "0" + (start_date_focus.getMonth() + 1)
+	} else {
+		border_month_ini = "" + (start_date_focus.getMonth() + 1) + ""
+	}
+	var border_year_ini = start_date_focus.getFullYear();
+	
+	start_date_focus_slider = "" + border_year_ini + "-" + border_month_ini + "-" + border_day_ini;
+
+	var border_day_ini;
+	if(end_date_focus.getDate()<10){
+		border_day_ini = "0" + end_date_focus.getDate()
+	} else {
+		border_day_ini = "" + end_date_focus.getDate() + ""
+	}
+	var border_month_ini;
+	if((end_date_focus.getMonth() + 1)<10){
+		border_month_ini = "0" + (end_date_focus.getMonth() + 1)
+	} else {
+		border_month_ini = "" + (end_date_focus.getMonth() + 1) + ""
+	}
+	var border_year_ini = end_date_focus.getFullYear();
+	end_date_focus_slider = "" + border_year_ini + "-" + border_month_ini + "-" + border_day_ini;
+
+	start_focus = $( "#start_focus" );
+	end_focus = $( "#end_focus" );
+	start_focus.html(start_date_focus_slider);
+	end_focus.html(end_date_focus_slider);
+
+	//Moving the labels along with the number of classes
+	//$("#start_focus").parent().css({position: 'relative'});
+	$("#start_focus").css({left: ($("#range_focus").slider('values',0)*$("#range_focus").width()/100-30)+"px", position:'absolute'});
+	$("#end_focus").css({left: ($("#range_focus").slider('values',2)*$("#range_focus").width()/100-30)+"px", position:'absolute'});
+
+	$("#range_focus").on("input", function() {
+		$("#start_focus").css({left: ($("#range_focus").slider('values',0)*$("#range_focus").width()/100-30)+"px", position:'absolute'});
+		$("#end_focus").css({left: ($("#range_focus").slider('values',2)*$("#range_focus").width()/100-30)+"px", position:'absolute'});
+	})
+
+}
+
+$("#number_ofclasses").on("change",function() {
+	update_slider_focus();
+});
+
+
+//Gets the focus slider extend and the palette chosen to apply colors of focus within the initial palette
+function create_color_legend_focus() {
+
+	if (focus_on) {
+		list_classes_ini = []
+	
+		var rectangles = d3.selectAll(".bar_legend_color");
+		c=0;
+		rectangles.each(function(d,i) {
+			rect = {
+				id : c,
+				start : parseFloat(d3.select(this).attr('x_legend')),
+				end : parseFloat(d3.select(this).attr('x_legend')) + parseFloat(d3.select(this).attr('width_legend')),
+				bdate : d3.select(this).attr('bdate_legend'),
+				edate : d3.select(this).attr('edate_legend'),
+				color : d3.select(this).attr('color_legend')
+			}
+			list_classes_ini.push(rect)
+			c++;
+		});
+		
+	
+		$("#color_legend").html("");
+		var gwidth_color_legend = $("#color_legend").width();
+		var gheight_color_legend = $("#color_legend").height();
+		
+		var grx_color_legend = d3.scaleLinear()
+				.domain([0, 100]) 
+				.range([0, gwidth_color_legend]) // unit: pixels
+	
+		var gry_color_legend = d3.scaleLinear()
+			.domain([0, 1]) 
+			.range([0, gheight_color_legend]) // unit: pixels
+			
+		var svg_color_legend = d3.select("#color_legend").append("svg")
+			.attr("id", "graph_color_legend")
+			.attr("width", gwidth_color_legend)
+			.attr("height", gheight_color_legend)
+
+		list_classes = []
+		console.log(list_classes_ini)
+		for (i=0; i<list_classes_ini.length; i++){
+			if (list_classes_ini[i].start <= percentage_value_start && list_classes_ini[i].end >= percentage_value_start || list_classes_ini[i].start <= percentage_value_end && list_classes_ini[i].end >= percentage_value_end){
+				//focus limit inside class
+				
+				if(list_classes_ini[i].start <= percentage_value_start && list_classes_ini[i].end >= percentage_value_start && list_classes_ini[i].end < percentage_value_end){
+					//start in
+					console.log("ok")
+					if(list_classes_ini[i].start == percentage_value_start){
+						//start equal to class begin
+						// 1 focus color
+						var color;
+						if($("#color_order").val() == "right_order"){
+							color = color_scales_palettes[$("#color_palette").val().concat('_inverse')][$("#number_ofclasses").val()][i];
+						} else {
+							color = color_scales_palettes[$("#color_palette").val().concat('_inverse')][$("#number_ofclasses").val()][list_classes_ini.length - i -1]
+						}
+						var rect_classe1 = {
+							id : 100,
+							start : list_classes_ini[i].start,
+							end : list_classes_ini[i].end,
+							bdate : list_classes_ini[i].bdate,
+							edate : list_classes_ini[i].edate,
+							color : color
+						};
+						list_classes.push(rect_classe1);
+					
+					} else if(list_classes_ini[i].end <= percentage_value_start){
+						//start equal to class end
+						// 1 normal color
+						var rect_classe1 = {
+							id: 100,
+							start : list_classes_ini[i].start,
+							end : list_classes_ini[i].end,
+							bdate : list_classes_ini[i].bdate,
+							edate: list_classes_ini[i].edate,
+							color : list_classes_ini[i].color
+						}
+						list_classes.push(rect_classe1);
+					
+					} else {
+						//start between class begin and class end
+						// 2 colors, 1 normal 1 focus 
+						
+						var rect_classe1 = {
+							id: 100,
+							start : list_classes_ini[i].start,
+							end : percentage_value_start,
+							bdate : list_classes_ini[i].bdate,
+							edate: start_date_focus_slider,
+							color : list_classes_ini[i].color
+						}
+						var color;
+						if($("#color_order").val() == "right_order"){
+							color = color_scales_palettes[$("#color_palette").val().concat('_inverse')][$("#number_ofclasses").val()][i];
+						} else {
+							color = color_scales_palettes[$("#color_palette").val().concat('_inverse')][$("#number_ofclasses").val()][list_classes_ini.length - i -1]
+						}
+						var rect_classe2 = {
+							id : 100,
+							start : percentage_value_start,
+							end : list_classes_ini[i].end,
+							bdate : start_date_focus_slider,
+							edate : list_classes_ini[i].edate,
+							color : color
+						};
+						list_classes.push(rect_classe1,rect_classe2);
+					
+					}
+					
+				} else if(list_classes_ini[i].start > percentage_value_start && list_classes_ini[i].start <= percentage_value_end && list_classes_ini[i].end >= percentage_value_end){
+					//end in
+					
+					if(list_classes_ini[i].start == percentage_value_end){
+						//end equal to class begin
+						// 1 normal class 
+						var rect_classe1 = {
+							id: 100,
+							start : list_classes_ini[i].start,
+							end : list_classes_ini[i].end,
+							bdate : list_classes_ini[i].bdate,
+							edate: list_classes_ini[i].edate,
+							color : list_classes_ini[i].color
+						}
+						list_classes.push(rect_classe1);
+					
+					} else if(list_classes_ini[i].end == percentage_value_end){
+						//end equal to class end
+						// 1 focus class 
+						var color;
+						if($("#color_order").val() == "right_order"){
+							color = color_scales_palettes[$("#color_palette").val().concat('_inverse')][$("#number_ofclasses").val()][i];
+						} else {
+							color = color_scales_palettes[$("#color_palette").val().concat('_inverse')][$("#number_ofclasses").val()][list_classes_ini.length - i -1]
+						}
+						var rect_classe1 = {
+							id : 100,
+							start : list_classes_ini[i].start,
+							end : list_classes_ini[i].end,
+							bdate : list_classes_ini[i].bdate,
+							edate : list_classes_ini[i].edate,
+							color : color
+						};
+						list_classes.push(rect_classe1);
+					
+					} else {
+						//end between class begin and class end
+						// 2 colors, 1 focus 1 normal 
+						var color;
+						if($("#color_order").val() == "right_order"){
+							color = color_scales_palettes[$("#color_palette").val().concat('_inverse')][$("#number_ofclasses").val()][i];
+						} else {
+							color = color_scales_palettes[$("#color_palette").val().concat('_inverse')][$("#number_ofclasses").val()][list_classes_ini.length - i -1]
+						}
+						var rect_classe1 = {
+							id : 100,
+							start : list_classes_ini[i].start,
+							end : percentage_value_end,
+							bdate : list_classes_ini[i].bdate,
+							edate : end_date_focus_slider,
+							color : color
+						};
+						var rect_classe2 = {
+							id: 100,
+							start : percentage_value_end,
+							end : list_classes_ini[i].end,
+							bdate : end_date_focus_slider,
+							edate: list_classes_ini[i].edate,
+							color : list_classes_ini[i].color
+						}
+						list_classes.push(rect_classe1,rect_classe2);
+					
+					}
+					
+				} else if(list_classes_ini[i].start <= percentage_value_start && list_classes_ini[i].end >= percentage_value_start && list_classes_ini[i].start <= percentage_value_end && list_classes_ini[i].end >= percentage_value_end){
+					//start and end in
+					
+					if(list_classes_ini[i].start == percentage_value_start && list_classes_ini[i].end != percentage_value_end){
+						//start equal to class begin and end before class end
+						// 2 colors, 1 focus 1 normal 
+						var color;
+						if($("#color_order").val() == "right_order"){
+							color = color_scales_palettes[$("#color_palette").val().concat('_inverse')][$("#number_ofclasses").val()][i];
+						} else {
+							color = color_scales_palettes[$("#color_palette").val().concat('_inverse')][$("#number_ofclasses").val()][list_classes_ini.length - i -1]
+						}
+						var rect_classe1 = {
+							id : 100,
+							start : list_classes_ini[i].start,
+							end : percentage_value_end,
+							bdate : list_classes_ini[i].bdate,
+							edate : end_date_focus_slider,
+							color : color
+						};
+						var rect_classe2 = {
+							id: 100,
+							start : percentage_value_end,
+							end : list_classes_ini[i].end,
+							bdate : end_date_focus_slider,
+							edate: list_classes_ini[i].edate,
+							color : list_classes_ini[i].color
+						}
+						list_classes.push(rect_classe1,rect_classe2);
+					
+					} else if(list_classes_ini[i].start != percentage_value_start && list_classes_ini[i].end == percentage_value_end){
+						//end equal to class end and start after class start
+						// 2 colors, 1 normal 1 focus 
+						
+						var rect_classe1 = {
+							id: 100,
+							start : list_classes_ini[i].start,
+							end : percentage_value_start,
+							bdate : list_classes_ini[i].bdate,
+							edate: start_date_focus_slider,
+							color : list_classes_ini[i].color
+						}
+						var color;
+						if($("#color_order").val() == "right_order"){
+							color = color_scales_palettes[$("#color_palette").val().concat('_inverse')][$("#number_ofclasses").val()][i];
+						} else {
+							color = color_scales_palettes[$("#color_palette").val().concat('_inverse')][$("#number_ofclasses").val()][list_classes_ini.length - i -1]
+						}
+						var rect_classe2 = {
+							id : 100,
+							start : percentage_value_start,
+							end : list_classes_ini[i].end,
+							bdate : start_date_focus_slider,
+							edate : list_classes_ini[i].edate,
+							color : color
+						};
+						list_classes.push(rect_classe1,rect_classe2);
+					
+					} else if(list_classes_ini[i].start == percentage_value_start && list_classes_ini[i].end == percentage_value_end){
+						//start equal to start begin and end equal to class end
+						// 1 focus color
+						
+						var color;
+						if($("#color_order").val() == "right_order"){
+							color = color_scales_palettes[$("#color_palette").val().concat('_inverse')][$("#number_ofclasses").val()][i];
+						} else {
+							color = color_scales_palettes[$("#color_palette").val().concat('_inverse')][$("#number_ofclasses").val()][list_classes_ini.length - i -1]
+						}
+						var rect_classe1 = {
+							id : 100,
+							start : list_classes_ini[i].start,
+							end : list_classes_ini[i].end,
+							bdate : list_classes_ini[i].bdate,
+							edate : list_classes_ini[i].edate,
+							color : color
+						};
+						list_classes.push(rect_classe1);
+					
+					} else {
+						//start and end between class begin and class end
+						// 3 color, 1 normal 1 focus 1 normal
+						
+						var rect_classe1 = {
+							id: 100,
+							start : list_classes_ini[i].start,
+							end : percentage_value_start,
+							bdate : list_classes_ini[i].bdate,
+							edate: start_date_focus_slider,
+							color : list_classes_ini[i].color
+						}
+						
+						var color;
+						if($("#color_order").val() == "right_order"){
+							color = color_scales_palettes[$("#color_palette").val().concat('_inverse')][$("#number_ofclasses").val()][i];
+						} else {
+							color = color_scales_palettes[$("#color_palette").val().concat('_inverse')][$("#number_ofclasses").val()][list_classes_ini.length - i -1]
+						}
+						var rect_classe2 = {
+							id : 100,
+							start : percentage_value_start,
+							end : percentage_value_end,
+							bdate : start_date_focus_slider,
+							edate : end_date_focus_slider,
+							color : color
+						};
+						
+						var rect_classe3 = {
+							id : 100,
+							start : percentage_value_end,
+							end : list_classes_ini[i].end,
+							bdate : end_date_focus_slider,
+							edate : list_classes_ini[i].edate,
+							color : list_classes_ini[i].color
+						};
+						
+						list_classes.push(rect_classe1,rect_classe2,rect_classe3);
+					
+					}
+				}
+				
+			} else {
+				//focus limit outside class
+				if(list_classes_ini[i].start > percentage_value_start && list_classes_ini[i].end < percentage_value_end){
+					//inside focus
+					// 1 focus color
+					var color;
+					if($("#color_order").val() == "right_order"){
+						color = color_scales_palettes[$("#color_palette").val().concat('_inverse')][$("#number_ofclasses").val()][i];
+					} else {
+						color = color_scales_palettes[$("#color_palette").val().concat('_inverse')][$("#number_ofclasses").val()][list_classes_ini.length - i -1]
+					}
+					var rect_classe1 = {
+						id : 100,
+						start : list_classes_ini[i].start,
+						end : list_classes_ini[i].end,
+						bdate : list_classes_ini[i].bdate,
+						edate : list_classes_ini[i].edate,
+						color : color
+					};
+					list_classes.push(rect_classe1);
+					
+				} else {
+					//outsite focus
+					// 1 normal color
+					
+					var rect_classe1 = {
+						id : 100,
+						start : list_classes_ini[i].start,
+						end : list_classes_ini[i].end,
+						bdate : list_classes_ini[i].bdate,
+						edate : list_classes_ini[i].edate,
+						color : list_classes_ini[i].color
+					};
+					list_classes.push(rect_classe1);
+					
+				}
+
+			}
+			
+		}
+		
+		console.log(list_classes)
+	
+		//Drawing the rectangles in the color_legend
+		for (i=0; i<list_classes.length; i++){
+			svg_color_legend.append("rect")
+				.attr("class", "bar_legend_color")
+				.attr("x", grx_color_legend(list_classes[i].start))
+				.attr("width", grx_color_legend(list_classes[i].end - list_classes[i].start))
+				.attr("x_legend", list_classes[i].start)
+				.attr("width_legend", list_classes[i].end)
+				.attr("y", 0)
+				.attr('fill', list_classes[i].color)
+				.attr("height",gry_color_legend(1))
+				.attr("id_legend_bar", list_classes[i].id)
+				.attr("bdate_legend", list_classes[i].bdate)
+				.attr("edate_legend", list_classes[i].edate)
+				.attr("color_legend", list_classes[i].color)
+				.attr("legend_bar_value", 100 - list_classes[i].start)
+		}
+		
+		
+	}
+
+	
+}
+
+
+function detect_structural_breaks() {
+	graph_histo = d3.selectAll(".bar");
+	histo = []
+	c = 0
+	graph_histo.each(function () {
+		bar = {
+			id : c,
+			height : parseFloat(d3.select(this).attr('height'))
+		}
+		histo.push(bar);
+		c++;
+	
+	})
+
+	var borders_antewave = [];
+	var borders_postwave = [];
+	var borders_antepic = [];
+	var borders_postpic = [];
+	
+	for (i=1; i<histo.length; i++){
+		delta = (histo[i].height / histo[i-1].height -1)*100;
+		if (delta > 100 && delta < 10000) {							//delta = 100 if the number of positive cases doubles
+			borders_antewave.push({id:histo[i].id, height : histo[i].height, delta: delta});
+		}
+	}
+	
+	/*let max_delta = Math.max.apply(Math,borders_antewave.map(function(o){return o.delta;}));
+	ante_wave = borders_antewave.find(function(o){ return o.delta == max_delta; });*/
+	ante_wave = borders_antewave[0];
+	
+	for (i=ante_wave.id; i<histo.length; i++){
+		if (histo[ante_wave.id - 1].height > histo[i].height){
+			borders_postwave.push({id:histo[i].id, height : histo[i].height});
+		}
+	}
+	post_wave = borders_postwave[0]
+
+	let max_height = Math.max.apply(Math,histo.map(function(o){return o.height;}))
+	pic = histo.find(function(o){ return o.height == max_height; });
+
+	/*id_pic = parseInt((ante_wave.id + post_wave.id)/2);
+	pic = histo.find(function(o){ return o.id == id_pic; });*/
+
+	for (i=ante_wave.id; i<post_wave.id; i++){
+		if(histo[i].height > 0.85*pic.height){
+			console.log(borders_antepic)
+			borders_antepic.push(histo[i])
+		}
+	}
+	antepic = borders_antepic[0];
+
+	for (i=pic.id; i<post_wave.id; i++){
+		if (histo[antepic.id - 1].height > histo[i].height){
+			borders_postpic.push({id:histo[i].id, height : histo[i].height});
+		}
+	}
+	postpic = borders_postpic[0]
+
+}
+
+function display_date_slider(slider_val, id) {
+	var dataset_start = new Date($("#dataset_start").val());
+	var dataset_end = new Date($("#dataset_end").val());
+	
+	var delta_time = (dataset_end.getTime() - dataset_start.getTime())*(slider_val/100);
+	var border_date = new Date();
+	border_date.setTime(dataset_start.getTime() + parseInt(delta_time));
+	
+	var border_day;
+	if(border_date.getDate()<10){border_day = "0" + border_date.getDate()}else{border_day = "" + border_date.getDate() + ""}
+	var border_month;
+	if((border_date.getMonth() + 1)<10){border_month = "0" + (border_date.getMonth() + 1)}else{border_month = "" + (border_date.getMonth() + 1) + ""}
+	var border_year = border_date.getFullYear();
+	
+	$("#" + id + "").html("" + border_day + "/" + border_month + "/" + border_year);
+}
