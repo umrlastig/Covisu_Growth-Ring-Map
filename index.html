@@ -1,15 +1,20 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
   <head>
     <meta charset="UTF-8">
 	<meta name="description" content="Visualisation GRM">
     <title>Visualisation GRM</title>
 	<link rel="stylesheet" href="leaflet/leaflet.css">
+
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+	<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+	<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+
 	<link rel="stylesheet" media="screen" href="style.css"/>
 	<script type="text/javascript" src="leaflet/leaflet.js"></script>
 	<script type="text/javascript" src="markercluster-src.js"></script>
 	<script src="https://d3js.org/d3.v4.js"></script>
-	<script type="text/javascript" src="jquery.js"></script>
+	<!--<script type="text/javascript" src="jquery.js"></script>-->
 	<script type="text/javascript" src="color_scale.js"></script>
 	
   </head>
@@ -67,10 +72,10 @@
 						</div>
 						<div id="animated_graph">
 							<div>
-								<input type="button" id="open_animation_menu" value="animation"/>
+								<input type="button" id="open_animation_menu" value="Animation"/>
 							</div>
 							<div>
-								<input type="button" id="legend_menu_button" value="Legende"/>
+								<input type="button" id="legend_menu_button" value="Legend"/>
 							</div>
 						</div>
 					</div>
@@ -89,62 +94,97 @@
 		</div>
 		<div id="div_color_legend">
 			<div id="div_color_legend_content">
-			
-				<div id="dataset_date_selectors">
-					<input type="date" id="dataset_start" name="input_dataset_start" value="2021-08-16" min="2019-11-01" max="2022-01-01">
-					<input type="date" id="dataset_end" name="input_dataset_start" value="2021-10-16" min="2019-11-01" max="2022-01-01">
-				</div>
+				<div id="color_legend_background">
+					<h2>1. Select a color palette</h2>
 				
-				<div id="color_selectors">
+				
 					
-					<div id="color_palette_selector">
-						<div>
-							Color palette
+					<div id="color_selectors">
+						
+						<div id="color_palette_selector">
+							<div>
+								Color palette
+							</div>
+							<div>
+								<select id="color_palette">
+									<option value="uni_hue_blue">uni_hue_blue</option>
+									<option value="uni_hue_red">uni_hue_red</option>
+									<option value="uni_hue_green_blue">uni_hue_green_blue</option>
+									<option value="uni_hue_yellow_red">uni_hue_yellow_red</option>
+									<option value="diverging_blue_white_red">diverging_blue_white_red</option>
+									<option value="diverging_blue_yellow_red">diverging_blue_yellow_red</option>
+									<option value="diverging_blue_yellow_green_red">diverging_blue_yellow_green_red</option>
+									<option value="SM_Maxime_1">SM_Maxime_1</option>
+									<option value="SM_Maxime_2">SM_Maxime_2</option>
+									<option value="SM_Maxime_3">SM_Maxime_3</option>
+									<option value="SM_Maxime_4">SM_Maxime_4</option>
+									<option value="SM_Maxime_5">SM_Maxime_5</option>
+									<option value="JB_phases_vague">Phases d'une vague</option>
+									<option value="JB_phases_vague_focus">JB_phases_vague_focus</option>
+									<option value="JB_phases_vague_pic">JB_phases_vague_pic</option>
+									<option value="JB_multi_vagues">Vagues successives</option>
+									<option value="JB_evt_politique">Décisions gouvernementales</option>
+									<option value="JB_auto_vague">Classification automatique 2 classes</option>
+									<option value="JB_auto_vague_3class">Classification automatique 3 classes</option>
+								</select>
+							</div>
 						</div>
-						<div>
-							<select id="color_palette">
-								<option value="uni_hue_blue">uni_hue_blue</option>
-								<option value="uni_hue_red">uni_hue_red</option>
-								<option value="uni_hue_green_blue">uni_hue_green_blue</option>
-								<option value="uni_hue_yellow_red">uni_hue_yellow_red</option>
-								<option value="diverging_blue_white_red">diverging_blue_white_red</option>
-								<option value="diverging_blue_yellow_red">diverging_blue_yellow_red</option>
-								<option value="diverging_blue_yellow_green_red">diverging_blue_yellow_green_red</option>
-								<option value="SM_Maxime_1">SM_Maxime_1</option>
-								<option value="SM_Maxime_2">SM_Maxime_2</option>
-								<option value="SM_Maxime_3">SM_Maxime_3</option>
-								<option value="SM_Maxime_4">SM_Maxime_4</option>
-								<option value="SM_Maxime_5">SM_Maxime_5</option>
-							</select>
+						
+						<div id="color_order_selector">
+							<div>
+								Color order
+							</div>
+							<div>
+								<select id="color_order">
+									<option value="right_order">non-reversed</option>
+									<option value="reversed_order">reversed</option>
+								</select>
+							</div>
 						</div>
+						
+						
+						
 					</div>
 					
-					<div id="color_order_selector">
-						<div>
-							Color order
-						</div>
-						<div>
-							<select id="color_order">
-								<option value="right_order">non-reversed</option>
-								<option value="reversed_order">reversed</option>
-							</select>
-						</div>
+					
+					<div id="number_ofclasses_selectors">
+						<p id="number_ofclasses_label">7 classes</p>
+						<input type="range" id="number_ofclasses" name="number_ofclasses" min="4" max="11" value="7" step="1">
+						
 					</div>
-					
-					
-					
 				</div>
+				<div id="color_legend_background">
+
+					<h2>2. Set the color palette borders</h2>
+					
+					
+					<div id="dataset_date_selectors">
+						from <input type="date" id="dataset_start" name="input_dataset_start" value="2021-08-16" min="2019-11-01" max="2022-01-01">
+						to <input type="date" id="dataset_end" name="input_dataset_start" value="2021-10-16" min="2019-11-01" max="2022-01-01">
+					</div>
+	
+					
+	
+					<div id="classes_border_selectors">
+					</div>
 				
-				<div id="number_ofclasses_selectors">
-					<input type="range" id="number_ofclasses" name="number_ofclasses" min="4" max="11" value="7" step="1">
-					<p id="number_ofclasses_label">7 Classes</p>
 				</div>
-				
-				<div id="classes_border_selectors">
-				</div>
-					
+
 				<div id="color_legend">
 				</div>
+
+				<div id="slider_focus_container">
+					<div id="range_focus"></div>
+					<div id="dates_focus">
+						<div id="start_focus">...</div>
+						<div id="end_focus">...</div>
+					</div>
+					
+				</div>
+				<div id="checkbox_focus_container">
+					<label><input type="checkbox" id="checkbox_focus">Define a time extent to highlight</label>
+				</div>
+				
 			
 			</div>
 		</div>
